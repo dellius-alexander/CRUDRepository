@@ -90,9 +90,9 @@ classDiagram
     MySQLDatabase "1" -- "1" Repository: Uses
     MariaDBDatabase "1" -- "1" Repository: Uses
     UserRepository "1" -- "1" User: Manages
-    DatabaseFactory ..> PostgreSQLDatabase: <<create>>
-    DatabaseFactory ..> MySQLDatabase: <<create>>
-    DatabaseFactory ..> MariaDBDatabase: <<create>>
+    DatabaseFactory ..> PostgreSQLDatabase: create
+    DatabaseFactory ..> MySQLDatabase: create
+    DatabaseFactory ..> MariaDBDatabase: create
 ```
 
 ### In this diagram (Class Diagram):
