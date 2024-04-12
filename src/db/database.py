@@ -56,6 +56,7 @@ class DatabaseInterface(ABC):
 
 # ---------------------------------------------------------
 
+
 class PostgreSQLDatabase(DatabaseInterface):
     """
     This class provides a PostgreSQL implementation of the DatabaseInterface.
@@ -250,7 +251,9 @@ class MariaDBDatabase(DatabaseInterface):
         """
         return self.session
 
+
 # ---------------------------------------------------------
+
 
 class DatabaseFactory:
     """

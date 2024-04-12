@@ -7,6 +7,7 @@ This module is used for managing the configuration of the CRUDRepository project
 import time
 import dotenv
 import os
+
 # --------------------------------------------------------------
 # Load environment variables from .env file
 for filename in [".env", ".env.*"]:
@@ -26,16 +27,16 @@ ROOT_DIR = os.path.dirname(os.path.abspath(__file__))  # ~/.../neuralNetworks/sr
 DATA_DIR = os.path.join(ROOT_DIR, "data")  # ~/.../neuralNetworks/src/data
 # --------------------------------------------------------------
 # Database configurations
-DB_TYPE = os.getenv('DB_TYPE')
-DB_NAME = os.getenv('DB_NAME')
-DB_USER = os.getenv('DB_USER')
-DB_PASSWORD = os.getenv('DB_PASSWORD')
-DB_HOST = os.getenv('DB_HOST')
-DB_PORT = os.getenv('DB_PORT')
+DB_TYPE = os.getenv("DB_TYPE")
+DB_NAME = os.getenv("DB_NAME")
+DB_USER = os.getenv("DB_USER")
+DB_PASSWORD = os.getenv("DB_PASSWORD")
+DB_HOST = os.getenv("DB_HOST")
+DB_PORT = os.getenv("DB_PORT")
 # --------------------------------------------------------------
 # Other configurations
-LOG_LEVEL = os.getenv('LOG_LEVEL', 'INFO')
-LOG_FILE = os.getenv('LOG_FILE', f'logs/log_{time.strftime("%Y%m%d_%H%M%S")}.log')
+LOG_LEVEL = os.getenv("LOG_LEVEL", "INFO")
+LOG_FILE = os.getenv("LOG_FILE", f'logs/log_{time.strftime("%Y%m%d_%H%M%S")}.log')
 # --------------------------------------------------------------
 # Set environment variables
 os.environ.setdefault("LOG_FILE", LOG_FILE)

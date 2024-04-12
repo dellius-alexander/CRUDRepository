@@ -16,6 +16,6 @@ setup(
         include=["src", "src.*"], exclude=["tests", "tests.*", "src.logs"]
     ),
     install_requires=[],
-    license=Path("LICENSE").read_text(encoding='utf-8'),
-    long_description=Path("README.md").read_text(encoding='utf-8'),
+    license=Path("LICENSE").read_text(encoding="utf-8"),
+    long_description=Path("README.md").read_text(encoding="utf-8"),
 )
