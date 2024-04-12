@@ -1,0 +1,67 @@
+version: '3.9'
+
+services:
+  # Postgres Database Service
+  postgres:
+    image: postgres:14.5-alpine
+    restart: on-failure
+    env_file:
+      - .env.postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - crud_network
+
+  mysql:
+    image: mysql:8.0
+#    build:
+#      context: .
+#      dockerfile: .devcontainer/mysql/Dockerfile
+    restart: on-failure
+    env_file:
+      - .env.mysql
+    volumes:
+      - mysql_data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    networks:
+      - crud_network
+
+  maria:
+    image: mariadb:10.6
+#    build:
+#      context: .
+#      dockerfile: .devcontainer/mariadb/Dockerfile
+    restart: on-failure
+    env_file:
+      - .env.maria
+    volumes:
+      - maria_data:/var/lib/mysql
+    ports:
+      - "3307:3306"
+    networks:
+      - crud_network
+
+  # DBMS Service (Adminer)
+  adminer:
+#    image: adminer
+    build:
+      context: .
+      dockerfile: .devcontainer/adminer/Dockerfile
+    restart: always
+    ports:
+      - 8080:8080
+    networks:
+      - crud_network
+
+volumes:
+  postgres_data: null
+  mysql_data: null
+  maria_data: null
+
+networks:
+  crud_network:
+    driver: bridge
+
