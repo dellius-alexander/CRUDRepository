@@ -166,7 +166,6 @@ The user is then returned to the client.
 ```python
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-from src.myLogger.Logger import get_logger
 from src.db.database import DatabaseFactory
 from typing import Optional
 from sqlalchemy import Column, Sequence, Integer, String
@@ -175,7 +174,6 @@ from src.model.base import Base
 from db.database import DatabaseInterface
 from src.repo.repository import Repository
 
-log = get_logger(__name__)
 
 # ---------------------------------------------------------
 # Create a User model
@@ -228,18 +226,17 @@ if __name__ == '__main__':
         'host': "127.0.0.1",
         'port': "5432"
     }
-    log.info(f"""Database Config: {db_config}""")
+    # Create a new database instance
     db = DatabaseFactory.create_database(db_config)
-    log.info(f"""Database: {db.__dict__()}""")
 
     # Create a UserRepository instance with the database instance
     user_repo = UserRepository(db)
-    log.info(f"""User Repository: {user_repo.__dict__()}""")
 
     # Create a new user
     user = User(username='Candy', password='password')
+    
+    # Add the user to the database
     user_repo.create(user)
-    log.info(f"""User: {user}""")
 ```
 
 ---
