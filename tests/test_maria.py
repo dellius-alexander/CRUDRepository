@@ -11,12 +11,12 @@ class TestMariaDB(unittest.TestCase):
     def setUp(self):
         # Create a new database instance
         db_config = {
-            'type': 'mariadb',
-            'db_name': 'volunteer',
-            'user': 'root',
-            'password': 'adminpassword',
-            'host': '10.0.0.223',
-            'port': '3307'
+            "type": "mariadb",
+            "db_name": "volunteer",
+            "user": "root",
+            "password": "adminpassword",
+            "host": "10.0.0.223",
+            "port": "3307",
         }
 
         self.database = DatabaseFactory.create_database(db_config)
@@ -40,17 +40,17 @@ class TestMariaDB(unittest.TestCase):
         created_user = self.user_repository.create(new_user)
 
         self.assertIsNotNone(created_user)
-        self.assertEqual(created_user['username'], "testuser")
-        self.assertEqual(created_user['password'], "testpassword")
+        self.assertEqual(created_user["username"], "testuser")
+        self.assertEqual(created_user["password"], "testpassword")
 
     def test_read_user(self):
         new_user = User(username="testuser", password="testpassword")
         created_user = self.user_repository.create(new_user)
 
-        read_user = self.user_repository.read(created_user['id'])
+        read_user = self.user_repository.read(created_user["id"])
 
         self.assertIsNotNone(read_user)
-        self.assertEqual(read_user.id, created_user['id'])
+        self.assertEqual(read_user.id, created_user["id"])
         self.assertEqual(read_user.username, "testuser")
         self.assertEqual(read_user.password, "testpassword")
 
@@ -83,6 +83,5 @@ class TestMariaDB(unittest.TestCase):
         self.assertIsNone(read_user)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()
-

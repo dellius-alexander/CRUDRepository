@@ -9,12 +9,12 @@ from tests.user import User
 class TestDatabase(unittest.TestCase):
     def setUp(self):
         db_config = {
-            'type': 'mysql',
-            'db_name': 'volunteer',
-            'user': "my_user",
-            'password': "mysqlpassword",
-            'host': "10.0.0.223",
-            'port': "3306"
+            "type": "mysql",
+            "db_name": "volunteer",
+            "user": "my_user",
+            "password": "mysqlpassword",
+            "host": "10.0.0.223",
+            "port": "3306",
         }
 
         self.db = DatabaseFactory.create_database(db_config)
@@ -73,5 +73,5 @@ class TestDatabase(unittest.TestCase):
         self.assertIsNone(deleted_user)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

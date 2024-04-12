@@ -5,9 +5,15 @@ from typing import Optional
 from logging import LogRecord, StreamHandler, DEBUG, Formatter, FileHandler
 from src.myLogger.Formatters import CustomFormatter
 
+
 # ------------------------------------------------------------------------
 class CustomStreamHandler(StreamHandler):
-    def __init__(self, level: int = DEBUG, formatter: Optional[Formatter] = CustomFormatter(), stream=sys.stderr):
+    def __init__(
+        self,
+        level: int = DEBUG,
+        formatter: Optional[Formatter] = CustomFormatter(),
+        stream=sys.stderr,
+    ):
         try:
             super().__init__(stream=stream)
             super().setLevel(level)
@@ -19,17 +25,17 @@ class CustomStreamHandler(StreamHandler):
 # ------------------------------------------------------------------------
 class CustomTimedRotatingFileHandler(logging.handlers.TimedRotatingFileHandler):
     def __init__(
-            self,
-            filename,
-            when='h',
-            interval=1,
-            backup_count=5,
-            encoding=None,
-            delay=False,
-            utc=False,
-            at_time=None,
-            level=logging.WARN,
-            formatter=None
+        self,
+        filename,
+        when="h",
+        interval=1,
+        backup_count=5,
+        encoding=None,
+        delay=False,
+        utc=False,
+        at_time=None,
+        level=logging.WARN,
+        formatter=None,
     ):
         try:
             super().__init__(
@@ -40,7 +46,7 @@ class CustomTimedRotatingFileHandler(logging.handlers.TimedRotatingFileHandler):
                 encoding=encoding,
                 delay=delay,
                 utc=utc,
-                atTime=at_time
+                atTime=at_time,
             )
             super().setFormatter(formatter)
             self.setLevel(level)
@@ -61,7 +67,9 @@ class CustomTimedRotatingFileHandler(logging.handlers.TimedRotatingFileHandler):
         # sort the array based on file creation time
         file_names.sort(key=lambda x: os.path.getmtime(os.path.join(log_dir, x)))
         # rebuild the file paths
-        file_names = [os.path.join(str(log_dir), str(file_name)) for file_name in file_names]
+        file_names = [
+            os.path.join(str(log_dir), str(file_name)) for file_name in file_names
+        ]
 
         # Calculate the number of files to delete based on the backup count
         num_files_to_delete = max(0, len(file_names) - self.backupCount)
@@ -69,15 +77,15 @@ class CustomTimedRotatingFileHandler(logging.handlers.TimedRotatingFileHandler):
         # Get the files to delete
         files_to_delete = file_names[:num_files_to_delete]
 
-    #     print(f"""
-    # Logging Dir: {log_dir}
-    # Base file name: {base_file_name}
-    # Backup count: {self.backup_count}
-    # Log Files: {file_names}
-    # Log Files Exceeded Limit: {num_files_to_delete}
-    # Sorted Files: {file_names}
-    # Files to delete: {files_to_delete}
-    #                 """)
+        #     print(f"""
+        # Logging Dir: {log_dir}
+        # Base file name: {base_file_name}
+        # Backup count: {self.backup_count}
+        # Log Files: {file_names}
+        # Log Files Exceeded Limit: {num_files_to_delete}
+        # Sorted Files: {file_names}
+        # Files to delete: {files_to_delete}
+        #                 """)
         return files_to_delete
 
     def emit(self, record: logging.LogRecord) -> None:
@@ -93,8 +101,7 @@ class CustomTimedRotatingFileHandler(logging.handlers.TimedRotatingFileHandler):
                 print(f"File not found: {file}")
 
     def cleanup_old_logs(self):
-        """ Override the doRollover method to delete old log files.
-        """
+        """Override the doRollover method to delete old log files."""
         # Now clean up old files
         files_to_delete = self.getFilesToDelete()
         self._delete_files(files_to_delete)

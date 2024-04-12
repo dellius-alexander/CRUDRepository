@@ -11,12 +11,12 @@ class TestPostgresImplementation(unittest.TestCase):
     def setUp(self):
         # Set up test database
         config = {
-            'type': 'postgresql',
-            'db_name': 'test_db',
-            'user': 'my_user',
-            'password': 'postgrespassword',
-            'host': '10.0.0.223',
-            'port': '5432'
+            "type": "postgresql",
+            "db_name": "test_db",
+            "user": "my_user",
+            "password": "postgrespassword",
+            "host": "10.0.0.223",
+            "port": "5432",
         }
 
         self.db = DatabaseFactory.create_database(config)
@@ -43,18 +43,18 @@ class TestPostgresImplementation(unittest.TestCase):
         self.assertIsNotNone(session)
 
     def test_create_user(self):
-        new_user = User(username='test_user', password='test_password')
+        new_user = User(username="test_user", password="test_password")
         self.user_repo.create(new_user)
 
         # Assert that the user was created successfully
         created_user = self.user_repo.read(new_user.id)
         self.assertIsNotNone(created_user)
-        self.assertEqual(created_user.username, 'test_user')
-        self.assertEqual(created_user.password, 'test_password')
+        self.assertEqual(created_user.username, "test_user")
+        self.assertEqual(created_user.password, "test_password")
 
     def test_read_user(self):
         # Create a user
-        new_user = User(username='test_user_read', password='test_password_read')
+        new_user = User(username="test_user_read", password="test_password_read")
         self.user_repo.create(new_user)
 
         # Read the user by ID
@@ -62,16 +62,16 @@ class TestPostgresImplementation(unittest.TestCase):
 
         # Assert that the read user matches the created user
         self.assertIsNotNone(read_user)
-        self.assertEqual(read_user.username, 'test_user_read')
-        self.assertEqual(read_user.password, 'test_password_read')
+        self.assertEqual(read_user.username, "test_user_read")
+        self.assertEqual(read_user.password, "test_password_read")
 
     def test_update_user(self):
         # Create a user
-        new_user = User(username='test_user_update', password='test_password_update')
+        new_user = User(username="test_user_update", password="test_password_update")
         self.user_repo.create(new_user)
 
         # Update the user's password
-        updated_password = 'updated_password'
+        updated_password = "updated_password"
         new_user.password = updated_password
         self.user_repo.update(new_user)
 
@@ -84,7 +84,7 @@ class TestPostgresImplementation(unittest.TestCase):
 
     def test_delete_user(self):
         # Create a user
-        new_user = User(username='test_user_delete', password='test_password_delete')
+        new_user = User(username="test_user_delete", password="test_password_delete")
         self.user_repo.create(new_user)
 
         # Delete the user
@@ -95,6 +95,5 @@ class TestPostgresImplementation(unittest.TestCase):
         self.assertIsNone(deleted_user)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()
-

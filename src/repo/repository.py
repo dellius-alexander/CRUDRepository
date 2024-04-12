@@ -8,7 +8,7 @@ from src.db.database import DatabaseInterface
 from src.model.base import Base
 from src.myLogger.Logger import get_logger
 
-T = TypeVar('T', bound=Base)
+T = TypeVar("T", bound=Base)
 
 log = get_logger(__name__)
 
@@ -43,7 +43,10 @@ class Repository(Generic[T]):
         try:
             session.add(entity)
             session.commit()
-            return {c.key: getattr(entity, c.key) for c in sqlalchemy.inspect(entity).mapper.column_attrs}
+            return {
+                c.key: getattr(entity, c.key)
+                for c in sqlalchemy.inspect(entity).mapper.column_attrs
+            }
         except SQLAlchemyError as e:
             session.rollback()
             log.error(f"Error creating entity in {self.model.__name__} table: {e}")
@@ -86,10 +89,7 @@ class Repository(Generic[T]):
             session.close()
 
     def __dict__(self):
-        return {
-            'database': self.database.__dict__(),
-            'model': self.model.__name__
-        }
+        return {"database": self.database.__dict__(), "model": self.model.__name__}
 
 
 # ---------------------------------------------------------
@@ -103,4 +103,3 @@ class EncryptionHandler:
     def decrypt(value):
         # ... implementation
         pass
-
