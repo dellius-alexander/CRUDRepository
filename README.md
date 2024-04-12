@@ -51,7 +51,19 @@ classDiagram
         +connect()
         +get_session(): Session
     }
+    class MySQLDatabase {
+        +__init__(db_name, user, password, host, port)
+        +connect()
+        +get_session(): Session
+    }
+    class MariaDBDatabase {
+        +__init__(db_name, user, password, host, port)
+        +connect()
+        +get_session(): Session
+    }
     DatabaseInterface <|-- PostgreSQLDatabase
+    DatabaseInterface <|-- MySQLDatabase
+    DatabaseInterface <|-- MariaDBDatabase
     class DatabaseFactory {
         +create_database(config: dict)
     }
@@ -69,13 +81,18 @@ classDiagram
         +delete(entity: T)
     }
     RepositoryInterface <|-- Repository
-    
+
     class UserRepository {
         +__init__(database: DatabaseInterface)
     }
     Repository <|-- UserRepository
     PostgreSQLDatabase "1" -- "1" Repository: Uses
+    MySQLDatabase "1" -- "1" Repository: Uses
+    MariaDBDatabase "1" -- "1" Repository: Uses
     UserRepository "1" -- "1" User: Manages
+    DatabaseFactory ..> PostgreSQLDatabase: <<create>>
+    DatabaseFactory ..> MySQLDatabase: <<create>>
+    DatabaseFactory ..> MariaDBDatabase: <<create>>
 ```
 
 ### In this diagram:
@@ -96,20 +113,31 @@ sequenceDiagram
     participant Client
     participant UserRepository
     participant Repository
+    participant DatabaseFactory
     participant PostgreSQLDatabase
+    participant MySQLDatabase
+    participant MariaDBDatabase
     participant Session
     participant User
     Client->>UserRepository: create(user)
     UserRepository->>Repository: create(user)
-    Repository->>PostgreSQLDatabase: get_session()
-    PostgreSQLDatabase-->>Repository: return session
+    Repository->>DatabaseFactory: create_database(config)
+    alt db_name == 'postgresql'
+        DatabaseFactory-->>PostgreSQLDatabase: create_database(config)
+        PostgreSQLDatabase-->>Repository: return session
+    else db_name == 'mysql'
+        DatabaseFactory-->>MySQLDatabase: create_database(config)
+        MySQLDatabase-->>Repository: return session
+    else db_name == 'mariadb'
+        DatabaseFactory-->>MariaDBDatabase: create_database(config)
+        MariaDBDatabase-->>Repository: return session
+    end
     Repository->>Session: add(user)
     Session->>User: add(user)
     Repository->>Session: commit()
     Session-->>Repository: commit successful
     Repository-->>UserRepository: return user
     UserRepository-->>Client: return user
-
 ```
 
 ### In this diagram:  
@@ -167,3 +195,5 @@ if __name__ == '__main__':
 ```
 
 ---
+
+
