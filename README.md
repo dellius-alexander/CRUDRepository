@@ -1,12 +1,34 @@
 # CRUD Repository 
 
 ---
-Description of your package.
 
-## Installation
+## Description
 
-```bash
-pip install CRUDRepository
+The CRUDRepository is a Python project designed to provide a 
+generic implementation of Create, Read, Update, and Delete (CRUD) 
+operations for various databases. It uses the concept of repositories 
+to abstract the data access layer, allowing for easy switching between 
+different databases.  
+
+The project includes classes for handling different types of databases 
+such as PostgreSQL, MySQL, and MariaDB. Each of these classes implements 
+a common DatabaseInterface, ensuring a consistent method of interaction 
+regardless of the underlying database.  
+
+The CRUDRepository also includes a Repository class that provides generic 
+CRUD operations. This class can be used as a base for creating more specific 
+repositories, like the test Repository UserRepository included in the project, which is 
+designed to manage User instances.  
+
+The project uses SQLAlchemy for ORM, providing a high-level, Pythonic 
+interface for database operations. It also includes a DatabaseFactory for 
+creating instances of the appropriate database class based on provided 
+configuration.  
+
+In summary, CRUDRepository is a flexible and extensible 
+foundation for Python applications that require database interactions, 
+abstracting the complexities of direct database access and providing a 
+clear and simple interface for performing CRUD operations.
 
 ## Class Diagram
 
@@ -114,8 +136,8 @@ to the client.
 # -*- coding: utf-8 -*-
 from myLogger.Logger import get_logger
 from src.db.database import DatabaseFactory
-from test.user import User
-from src.repo.repository import UserRepository
+from tests.user import User
+from tests.repository import UserRepository
 
 log = get_logger(__name__)
 
