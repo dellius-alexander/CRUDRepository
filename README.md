@@ -41,7 +41,7 @@ classDiagram
         +username: str
         +password: str
     }
-    Base <|-- User
+    Base <|-- User: Implements
     class DatabaseInterface {
         +connect()
         +get_session(): Session
@@ -61,9 +61,9 @@ classDiagram
         +connect()
         +get_session(): Session
     }
-    DatabaseInterface <|-- PostgreSQLDatabase
-    DatabaseInterface <|-- MySQLDatabase
-    DatabaseInterface <|-- MariaDBDatabase
+    DatabaseInterface <|-- PostgreSQLDatabase: Implements
+    DatabaseInterface <|-- MySQLDatabase: Implements
+    DatabaseInterface <|-- MariaDBDatabase: Implements
     class DatabaseFactory {
         +create_database(config: dict)
     }
@@ -80,19 +80,19 @@ classDiagram
         +update(entity: T)
         +delete(entity: T)
     }
-    RepositoryInterface <|-- Repository
+    RepositoryInterface <|-- Repository: Implements
 
     class UserRepository {
         +__init__(database: DatabaseInterface)
     }
-    Repository <|-- UserRepository
+    Repository <|-- UserRepository: Implements
     PostgreSQLDatabase "1" -- "1" Repository: Uses
     MySQLDatabase "1" -- "1" Repository: Uses
     MariaDBDatabase "1" -- "1" Repository: Uses
     UserRepository "1" -- "1" User: Manages
-    DatabaseFactory ..> PostgreSQLDatabase: create
-    DatabaseFactory ..> MySQLDatabase: create
-    DatabaseFactory ..> MariaDBDatabase: create
+    DatabaseFactory ..> PostgreSQLDatabase: << create >>
+    DatabaseFactory ..> MySQLDatabase: << create >>
+    DatabaseFactory ..> MariaDBDatabase: << create >>
 ```
 
 ### In this diagram (Class Diagram):
