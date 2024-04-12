@@ -21,7 +21,6 @@ class User(Base):
     )
     username: Mapped[str] = Column(String(128), nullable=False)
     password: Mapped[Optional[str]] = Column(String(128), nullable=True)
-    # addresses: Mapped[List["Address"]] = relationship("Address", back_populates="user")
 
     def to_dict(self) -> dict:
         return {"id": self.id, "username": self.username, "password": self.password}

@@ -166,13 +166,57 @@ The user is then returned to the client.
 ```python
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-from myLogger.Logger import get_logger
+from src.myLogger.Logger import get_logger
 from src.db.database import DatabaseFactory
-from tests.user import User
-from tests.repository import UserRepository
+from typing import Optional
+from sqlalchemy import Column, Sequence, Integer, String
+from sqlalchemy.orm import Mapped
+from src.model.base import Base
+from db.database import DatabaseInterface
+from src.repo.repository import Repository
 
 log = get_logger(__name__)
 
+# ---------------------------------------------------------
+# Create a User model
+# ---------------------------------------------------------
+class User(Base):
+    __tablename__ = "user"
+
+    id: Mapped[int] = Column(
+        Integer,
+        Sequence("user_id_seq"),
+        primary_key=True,
+        autoincrement=True,
+        nullable=False,
+        unique=True,
+        index=True,
+    )
+    username: Mapped[str] = Column(String(128), nullable=False)
+    password: Mapped[Optional[str]] = Column(String(128), nullable=True)
+
+    def to_dict(self) -> dict:
+        return {"id": self.id, "username": self.username, "password": self.password}
+
+    def as_dict(self) -> dict:  # renamed from __dict__ to as_dict
+        return self.to_dict()
+
+    def __repr__(self) -> str:
+        return (
+            f"User(id={self.id!r}, name={self.username!r}, fullname={self.password!r})"
+        )
+
+
+# ---------------------------------------------------------
+# Create a UserRepository instance with the database instance
+# ---------------------------------------------------------
+class UserRepository(Repository[User]):
+    def __init__(self, database: DatabaseInterface):
+        super().__init__(database, User)
+      
+        
+# ---------------------------------------------------------
+# Create a new user
 # ---------------------------------------------------------
 if __name__ == '__main__':
     # Create a new database instance
