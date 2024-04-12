@@ -1,3 +1,8 @@
+[![Python-Package](https://github.com/dellius-alexander/CRUDRepository/actions/workflows/python-package.yml/badge.svg?branch=main)](https://github.com/dellius-alexander/CRUDRepository/actions/workflows/python-package.yml) \
+[![Pylint](https://github.com/dellius-alexander/CRUDRepository/actions/workflows/pylint.yml/badge.svg?branch=main)](https://github.com/dellius-alexander/CRUDRepository/actions/workflows/pylint.yml)
+
+---
+
 # CRUD Repository 
 
 ---

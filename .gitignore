@@ -8,7 +8,9 @@
 /**/__pycache__
 /.pypirc
 /src/logs/
-/.devcontainer
+/.devcontainer/data
+/.devcontainer/scripts
+/.devcontainer/Tables.yaml
+/.devcontainer/backup
 /.k8s
-/.dockerignore
-/docker-compose.yml
+

@@ -1,0 +1,46 @@
+mysqld:
+  commands:
+    - name: "--basedir"
+      description: "Path to the base directory."
+      options: []
+    - name: "--bind-address"
+      description: "IP address to bind to."
+      options: []
+    - name: "--datadir"
+      description: "Path to the data directory."
+      options: []
+    - name: "--debug"
+      description: "Write a debugging log."
+      options:
+        - name: "d:t:o,filename"
+          description: "Sets the debugging trace to the specified value."
+    - name: "--default-authentication-plugin"
+      description: "Default authentication plugin to use."
+      options: []
+    - name: "--help"
+      description: "Display this help and exit."
+      options: []
+    - name: "--init-file"
+      description: "Read SQL commands from this file at startup."
+      options: []
+    - name: "--log-error"
+      description: "Log errors to the specified file."
+      options: []
+    - name: "--pid-file"
+      description: "Pid file to use."
+      options: []
+    - name: "--port"
+      description: "Port number to use for connection."
+      options: []
+    - name: "--secure-file-priv"
+      description: "Limit LOAD DATA, SELECT ... OUTFILE, and LOAD_FILE() to files within specified directory."
+      options: []
+    - name: "--skip-grant-tables"
+      description: "Start without grant tables."
+      options: []
+    - name: "--socket"
+      description: "Socket file to use for connection."
+      options: []
+    - name: "--user"
+      description: "Run mysqld daemon as user."
+      options: []
