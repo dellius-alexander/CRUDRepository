@@ -95,14 +95,14 @@ classDiagram
     DatabaseFactory ..> MariaDBDatabase: <<create>>
 ```
 
-### In this diagram:
+### In this diagram (Class Diagram):
 
-- `Base` is a base class for all models, and User is a specific model that extends Base.
-- `DatabaseInterface` is an abstract base class that defines the interface for a database, and PostgreSQLDatabase is a concrete implementation of this interface.
-- `DatabaseFactory` is a factory class that creates instances of PostgreSQLDatabase.
-- `RepositoryInterface` is an abstract base class that defines the interface for a repository, and Repository is a generic implementation of this interface.
-- `UserRepository` is a specific repository that manages User instances.
-- `PostgreSQLDatabase` is used by Repository, and UserRepository manages User instances.
+- `Base` is a base class for all models, and `User` is a specific model that extends `Base`.
+- `DatabaseInterface` is an abstract base class that defines the interface for a database. `PostgreSQLDatabase`, `MySQLDatabase`, and `MariaDBDatabase` are concrete implementations of this interface.
+- `DatabaseFactory` is a factory class that creates instances of `PostgreSQLDatabase`, `MySQLDatabase`, or `MariaDBDatabase` based on the provided configuration.
+- `RepositoryInterface` is an abstract base class that defines the interface for a repository, and `Repository` is a generic implementation of this interface.
+- `UserRepository` is a specific repository that manages `User` instances.
+- `PostgreSQLDatabase`, `MySQLDatabase`, and `MariaDBDatabase` are used by `Repository`, and `UserRepository` manages `User` instances.
 
 ---
 
@@ -140,20 +140,24 @@ sequenceDiagram
     UserRepository-->>Client: return user
 ```
 
-### In this diagram:  
 
-- `Client` represents the client code that interacts with the UserRepository.
-- `UserRepository` is a specific repository that manages User instances.
+### In this diagram (Sequence Diagram):
+
+- `Client` represents the client code that interacts with the `UserRepository`.
+- `UserRepository` is a specific repository that manages `User` instances.
 - `Repository` is a generic implementation of a repository.
-- `PostgreSQLDatabase` is a concrete implementation of a database interface.
+- `DatabaseFactory` is a factory class that creates instances of `PostgreSQLDatabase`, 
+`MySQLDatabase`, or `MariaDBDatabase` based on the provided configuration.
+- `PostgreSQLDatabase`, `MySQLDatabase`, and `MariaDBDatabase` are concrete implementations of a database interface.
 - `Session` represents a database session.
 - `User` represents a user instance.
 
-The sequence diagram shows the process of creating a new user. The client 
-calls the create method on the UserRepository, which in turn calls the create 
-method on the Repository. The Repository gets a session from the PostgreSQLDatabase, 
-adds the user to the session, and commits the session. The user is then returned 
-to the client.
+The sequence diagram shows the process of creating a new user. The client calls the `create` 
+method on the `UserRepository`, which in turn calls the `create` method on the `Repository`. 
+The `Repository` gets a session from the `DatabaseFactory` which creates an instance of 
+either `PostgreSQLDatabase`, `MySQLDatabase`, or `MariaDBDatabase` based on the provided 
+configuration. The `Repository` adds the user to the session, and commits the session. 
+The user is then returned to the client.
 
 ---
 
