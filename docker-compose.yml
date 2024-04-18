@@ -1,6 +1,28 @@
 version: '3.9'
 
+volumes:
+  postgres_data: null
+  mysql_data: null
+  maria_data: null
+
+networks:
+  crud_network:
+    driver: bridge
+
 services:
+  nginx-proxy:
+    #    image: nginx:latest
+    build:
+      context: .
+      dockerfile: .devcontainer/nginx-proxy/Dockerfile
+    container_name: nginx-proxy
+    hostname: www.example.com
+    ports:
+      - "80:80"
+      - "443:443"
+    networks:
+      - crud_network
+
   # Postgres Database Service
   postgres:
     image: postgres:14.5-alpine
@@ -9,36 +31,43 @@ services:
       - .env.postgres
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    expose:
+      - "5432"
     ports:
       - "5432:5432"
     networks:
       - crud_network
 
   mysql:
-    image: mysql:8.0
-#    build:
-#      context: .
-#      dockerfile: .devcontainer/mysql/Dockerfile
+#    image: mysql:8.0
+    build:
+      context: .
+      dockerfile: .devcontainer/mysql/Dockerfile
     restart: on-failure
     env_file:
       - .env.mysql
     volumes:
       - mysql_data:/var/lib/mysql
+    expose:
+      - "3306"
     ports:
       - "3306:3306"
     networks:
       - crud_network
 
+
   maria:
-    image: mariadb:10.6
-#    build:
-#      context: .
-#      dockerfile: .devcontainer/mariadb/Dockerfile
+#    image: mariadb:10.6
+    build:
+      context: .
+      dockerfile: .devcontainer/mariadb/Dockerfile
     restart: on-failure
     env_file:
       - .env.maria
     volumes:
       - maria_data:/var/lib/mysql
+    expose:
+        - "3306"
     ports:
       - "3307:3306"
     networks:
@@ -51,17 +80,10 @@ services:
       context: .
       dockerfile: .devcontainer/adminer/Dockerfile
     restart: always
+    expose:
+      - "8080"
     ports:
       - 8080:8080
     networks:
       - crud_network
-
-volumes:
-  postgres_data: null
-  mysql_data: null
-  maria_data: null
-
-networks:
-  crud_network:
-    driver: bridge
 

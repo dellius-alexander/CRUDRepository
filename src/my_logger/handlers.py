@@ -1,13 +1,20 @@
+"""
+This module contains custom logging handlers.
+"""
 import logging.handlers
 import os
 import sys
+from logging import StreamHandler, DEBUG, Formatter
 from typing import Optional
-from logging import LogRecord, StreamHandler, DEBUG, Formatter, FileHandler
-from src.myLogger.Formatters import CustomFormatter
+
+from src.my_logger.formatters import CustomFormatter
 
 
 # ------------------------------------------------------------------------
 class CustomStreamHandler(StreamHandler):
+    """
+    This class is a custom stream handler for logging.
+    """
     def __init__(
         self,
         level: int = DEBUG,
@@ -18,31 +25,43 @@ class CustomStreamHandler(StreamHandler):
             super().__init__(stream=stream)
             super().setLevel(level)
             super().setFormatter(formatter)
-        except Exception as e:
-            print(f"Error: {e}")
+        except IOError as e:
+            print(f"IOError: {e}")
+        except ValueError as e:
+            print(f"ValueError: {e}")
 
 
 # ------------------------------------------------------------------------
 class CustomTimedRotatingFileHandler(logging.handlers.TimedRotatingFileHandler):
-    def __init__(
-        self,
-        filename,
-        when="h",
-        interval=1,
-        backup_count=5,
-        encoding=None,
-        delay=False,
-        utc=False,
-        at_time=None,
-        level=logging.WARN,
-        formatter=None,
-    ):
+    """
+    This class is a custom timed rotating file handler for logging.
+    """
+
+    def __init__(self, **kwargs):
+        """
+        Initialize the CustomTimedRotatingFileHandler.
+
+        All parameters are now taken from **kwargs.
+        """
+
+        # Extract arguments using kwargs.get()
+        filename = kwargs.get("filename")
+        when = kwargs.get("when", "h")
+        interval = kwargs.get("interval", 1)
+        backup_count = kwargs.get("backup_count", 5)
+        encoding = kwargs.get("encoding", None)
+        delay = kwargs.get("delay", False)
+        utc = kwargs.get("utc", False)
+        at_time = kwargs.get("at_time", None)
+        level = kwargs.get("level", logging.WARN)
+        formatter = kwargs.get("formatter", None)
+
         try:
             super().__init__(
                 filename=filename,
                 when=when,
                 interval=interval,
-                backupCount=backup_count,  # Pass backup_count to super
+                backupCount=backup_count,
                 encoding=encoding,
                 delay=delay,
                 utc=utc,
@@ -50,15 +69,15 @@ class CustomTimedRotatingFileHandler(logging.handlers.TimedRotatingFileHandler):
             )
             super().setFormatter(formatter)
             self.setLevel(level)
-            print(f"Log file: {os.getenv('LOG_FILE')}")
-            print(f"Log dir: {os.getenv('LOG_DIR')}")
-            print(f"Log level: {level}")
             self.cleanup_old_logs()
-        except Exception as e:
-            print(f"Error: {e}")
+        except IOError as e:
+            print(f"IOError: {e}")
+        except ValueError as e:
+            print(f"ValueError: {e}")
 
     def getFilesToDelete(self):
-        """Get the list of files to delete
+        """
+        Get the list of files to delete
         :return: list of files to delete
         """
         log_dir = os.getenv("LOG_DIR")
@@ -89,9 +108,20 @@ class CustomTimedRotatingFileHandler(logging.handlers.TimedRotatingFileHandler):
         return files_to_delete
 
     def emit(self, record: logging.LogRecord) -> None:
-        super().emit(record)
+        """
+        Emit the log record
+        :param record:
+        :return:
+        """
+        logging.handlers.TimedRotatingFileHandler.emit(self, record)
 
-    def _delete_files(self, files_to_delete):
+    @classmethod
+    def _delete_files(cls, files_to_delete):
+        """
+        Delete the files
+        :param files_to_delete:
+        :return:
+        """
         # Delete files
         for file in files_to_delete:
             if os.path.exists(file):
@@ -107,6 +137,11 @@ class CustomTimedRotatingFileHandler(logging.handlers.TimedRotatingFileHandler):
         self._delete_files(files_to_delete)
 
     def _limit(self, x):
+        """
+        Limit the number of log files to keep
+        :param x:
+        :return:
+        """
         return max(0, len(x) - self.backupCount)
 
 

@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-from typing import Optional, List
+from typing import Optional
 from sqlalchemy import Column, Sequence, Integer, String
-from sqlalchemy.orm import Mapped, relationship
+from sqlalchemy.orm import Mapped
 from src.model.base import Base
 
 
@@ -30,5 +30,5 @@ class User(Base):
 
     def __repr__(self) -> str:
         return (
-            f"User(id={self.id!r}, name={self.username!r}, fullname={self.password!r})"
+            f"User(id={self.id!r}, username={self.username!r}, password={self.password!r})"
         )

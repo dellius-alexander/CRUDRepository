@@ -4,49 +4,48 @@ from abc import ABC, abstractmethod
 from typing import Generic, TypeVar
 import sqlalchemy
 from sqlalchemy.exc import SQLAlchemyError
-from src.db.database import DatabaseInterface
+from src.db.database_interface import DatabaseInterface
 from src.model.base import Base
-from src.myLogger.Logger import get_logger
+from src.my_logger.logger import CustomLogger
 
+log = CustomLogger(__name__).get_logger("DEBUG")
 T = TypeVar("T", bound=Base)
-
-log = get_logger(__name__)
 
 
 # ---------------------------------------------------------
 class RepositoryInterface(ABC):
     @abstractmethod
-    def create(self, entity):
+    def create(self, entity: T) -> T:
         pass
 
     @abstractmethod
-    def read(self, id):
+    def read(self, id: int) -> T:
         pass
 
     @abstractmethod
-    def update(self, entity):
+    def update(self, entity) -> T:
         pass
 
     @abstractmethod
-    def delete(self, entity):
+    def delete(self, entity) -> None:
         pass
 
 
 # ---------------------------------------------------------
-class Repository(Generic[T]):
+class Repository(RepositoryInterface, Generic[T]):
     def __init__(self, database: DatabaseInterface, model: type[T]):
         self.database = database
         self.model = model
 
-    def create(self, entity: T):
+    def create(self, entity: T) -> T:
         session = self.database.get_session()
         try:
             session.add(entity)
             session.commit()
-            return {
+            return self.model(**{
                 c.key: getattr(entity, c.key)
                 for c in sqlalchemy.inspect(entity).mapper.column_attrs
-            }
+            })
         except SQLAlchemyError as e:
             session.rollback()
             log.error(f"Error creating entity in {self.model.__name__} table: {e}")
@@ -54,7 +53,7 @@ class Repository(Generic[T]):
         finally:
             session.close()
 
-    def read(self, id):
+    def read(self, id) -> T:
         session = self.database.get_session()
         try:
             return session.get(self.model, id)
@@ -64,11 +63,15 @@ class Repository(Generic[T]):
         finally:
             session.close()
 
-    def update(self, entity: T):
+    def update(self, entity: T) -> T:
         session = self.database.get_session()
         try:
             session.merge(entity)
             session.commit()
+            return self.model(**{
+                c.key: getattr(entity, c.key)
+                for c in sqlalchemy.inspect(entity).mapper.column_attrs
+            })
         except SQLAlchemyError as e:
             session.rollback()
             log.error(f"Error updating entity from {entity.__name__} table: {e}")
@@ -76,7 +79,7 @@ class Repository(Generic[T]):
         finally:
             session.close()
 
-    def delete(self, entity: T):
+    def delete(self, entity: T) -> None:
         session = self.database.get_session()
         try:
             session.delete(entity)
@@ -92,14 +95,3 @@ class Repository(Generic[T]):
         return {"database": self.database.__dict__(), "model": self.model.__name__}
 
 
-# ---------------------------------------------------------
-class EncryptionHandler:
-    @staticmethod
-    def encrypt(value):
-        # ... implementation
-        pass
-
-    @staticmethod
-    def decrypt(value):
-        # ... implementation
-        pass

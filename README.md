@@ -42,23 +42,22 @@ classDiagram
     }
     Base <|-- User: Implements
     class DatabaseInterface {
-        +connect()
-        +get_session(): Session
+        +session: scoped_session
+        +engine: Engine
+        +connect(): Connection
+        +get_session(): scoped_session
     }
     class PostgreSQLDatabase {
-        +__init__(db_name, user, password, host, port)
-        +connect()
-        +get_session(): Session
+        +connect(): Connection
+        +get_session(): scoped_session
     }
     class MySQLDatabase {
-        +__init__(db_name, user, password, host, port)
-        +connect()
-        +get_session(): Session
+        +connect(): Connection
+        +get_session(): scoped_session
     }
     class MariaDBDatabase {
-        +__init__(db_name, user, password, host, port)
-        +connect()
-        +get_session(): Session
+        +connect(): Connection
+        +get_session(): scoped_session
     }
     DatabaseInterface <|-- PostgreSQLDatabase: Implements
     DatabaseInterface <|-- MySQLDatabase: Implements
@@ -67,17 +66,16 @@ classDiagram
         +create_database(config: dict)
     }
     class RepositoryInterface {
-        +create(entity)
-        +read(id)
-        +update(entity)
-        +delete(entity)
+        +create(entity: T) : T
+        +read(id) : T
+        +update(entity: T): T
+        +delete(entity: T): None
     }
     class Repository {
-        +__init__(database: DatabaseInterface, model: type[T])
-        +create(entity: T)
-        +read(id)
-        +update(entity: T)
-        +delete(entity: T)
+        +create(entity: T) : T
+        +read(id) : T
+        +update(entity: T): T
+        +delete(entity: T): None
     }
     RepositoryInterface <|-- Repository: Implements
 
@@ -165,12 +163,12 @@ The user is then returned to the client.
 ```python
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-from src.db.database import DatabaseFactory
+from src.db.database_interface import DatabaseFactory
 from typing import Optional
 from sqlalchemy import Column, Sequence, Integer, String
 from sqlalchemy.orm import Mapped
 from src.model.base import Base
-from db.database import DatabaseInterface
+from db.database_interface import DatabaseInterface
 from src.repo.repository import Repository
 
 
@@ -210,8 +208,8 @@ class User(Base):
 class UserRepository(Repository[User]):
     def __init__(self, database: DatabaseInterface):
         super().__init__(database, User)
-      
-        
+
+
 # ---------------------------------------------------------
 # Create a new user
 # ---------------------------------------------------------
@@ -231,12 +229,17 @@ if __name__ == '__main__':
     # Create a UserRepository instance with the database instance
     user_repo = UserRepository(db)
 
+    # OR create a generic Repository instance with the database instance
+    # and the User model
+    user_repo = Repository(db, User)
+
     # Create a new user
     user = User(username='Candy', password='password')
-    
+
     # Add the user to the database
     user_repo.create(user)
 ```
+
 
 ---
 

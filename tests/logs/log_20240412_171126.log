@@ -1,0 +1,36 @@
+[2024-04-12 17:11:26][ERROR][src.db.database][96]: 
+Error: column "test_db" does not exist
+LINE 1: SELECT 1 FROM pg_database WHERE datname LIKE test_db
+                                                     ^
+
+[2024-04-12 17:11:27][INFO][test_postgres][27]: 
+Database: {'engine': Engine(postgresql://my_user:***@10.0.0.223:5432/test_db), 'session': <sqlalchemy.orm.scoping.scoped_session object at 0x10f26a450>}
+[2024-04-12 17:11:27][INFO][test_postgres][28]: 
+User Repository: {'database': {'engine': Engine(postgresql://my_user:***@10.0.0.223:5432/test_db), 'session': <sqlalchemy.orm.scoping.scoped_session object at 0x10f26a450>}, 'model': 'User'}
+[2024-04-12 17:11:27][INFO][test_postgres][39]: 
+Database connection closed.
+[2024-04-12 17:11:27][ERROR][src.db.database][96]: 
+Error: column "test_db" does not exist
+LINE 1: SELECT 1 FROM pg_database WHERE datname LIKE test_db
+                                                     ^
+
+[2024-04-12 17:11:27][ERROR][src.db.database][96]: 
+Error: column "test_db" does not exist
+LINE 1: SELECT 1 FROM pg_database WHERE datname LIKE test_db
+                                                     ^
+
+[2024-04-12 17:11:27][ERROR][src.db.database][96]: 
+Error: column "test_db" does not exist
+LINE 1: SELECT 1 FROM pg_database WHERE datname LIKE test_db
+                                                     ^
+
+[2024-04-12 17:11:27][ERROR][src.db.database][96]: 
+Error: column "test_db" does not exist
+LINE 1: SELECT 1 FROM pg_database WHERE datname LIKE test_db
+                                                     ^
+
+[2024-04-12 17:11:27][ERROR][src.db.database][96]: 
+Error: column "test_db" does not exist
+LINE 1: SELECT 1 FROM pg_database WHERE datname LIKE test_db
+                                                     ^
+

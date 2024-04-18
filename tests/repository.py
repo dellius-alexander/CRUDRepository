@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-from db.database import DatabaseInterface
-from user import User
+from db.database_interface import DatabaseInterface
+from .user import User
 from src.repo.repository import Repository
 
 
