@@ -1,3 +1,7 @@
+[![Python package](https://github.com/dellius-alexander/CRUDRepository/actions/workflows/python-package.yml/badge.svg)](https://github.com/dellius-alexander/CRUDRepository/actions/workflows/python-package.yml)
+
+---
+
 # CRUD Repository
 
 ---
