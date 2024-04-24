@@ -5,8 +5,7 @@ sed -e "s/version = \"[[:digit:]]\.[[:digit:]]\.[[:digit:]]\"/version = \"${VERS
 sed -e "s/version = \"[[:digit:]]\.[[:digit:]]\.[[:digit:]]\"/version = \"${VERSION}\"/g" setup.cfg | tee setup.temp.cfg && \
 exit 0
 mv setup.temp.py setup.py && \
-mv setup.temp.cfg setup.cfg && \
-mv src/utils/parsers/args_parser.temp.py src/utils/parsers/args_parser.py && wait $!
+mv setup.temp.cfg setup.cfg && wait $!
 
 if python3 -m pytest tests/ 2>&1 ; then
     echo "Testsing completed Successfully."

@@ -13,11 +13,10 @@ on:
       - main
 jobs:
   setup:
-    name: Setup Python Environment
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [ "3.7", "3.8", "3.9",  "3.10" ]
+        python-version: ["3.8", "3.9",  "3.10" ]
     steps:
       - name: Install Python
         uses: actions/setup-python@v4
@@ -25,26 +24,23 @@ jobs:
           python-version: ${{ matrix.python-version }}
           architecture: x64
 
+      - name: Install Poetry
+        run: |
+          curl -sSL https://install.python-poetry.org | python3 -
+
       - name: Checkout
         uses: actions/checkout@v2
 
       - name: Install dependencies
         run: |
-          python -m pip install --upgrade pip
-          python -m pip install black pytest wheel setuptools build twine
-          if [ -f requirements.txt ]; then pip install  -r requirements.txt ; fi 
-
-      - name: Lint with black
-        run: |
-          black src
-          black --check src
+          poetry install
 
   test:
     needs: setup
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [ "3.7", "3.8", "3.9",  "3.10" ]
+        python-version: [ "3.8", "3.9",  "3.10" ]
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -53,11 +49,14 @@ jobs:
         run: docker-compose up -d
 
       - name: Build and test
-        run: /bin/bash deploy.sh 2>&1
+        run: poetry run pytest
 
   deploy:
     needs: test
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.8", "3.9",  "3.10" ]
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -74,13 +73,10 @@ jobs:
             README.md
             LICENSE
 
-#      - name: Upload to PyPI
+#      - name: Publish to PyPI
 #        env:
 #          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 #          TWINE_USERNAME: ${{ secrets.TWINE_USERNAME }}
 #          TWINE_PASSWORD: ${{ secrets.TWINE_PASSWORD }}
 #        run: |
-#          echo "[pypi]" > ~/.pypirc
-#          echo "  username = $TWINE_USERNAME" >> ~/.pypirc
-#          echo "  password = $TWINE_PASSWORD" >> ~/.pypirc
-#          python3 -m twine upload --skip-existing dist/* &>/dev/null
+#          poetry publish --build -u $TWINE_USERNAME -p $TWINE_PASSWORD

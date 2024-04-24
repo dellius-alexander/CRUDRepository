@@ -31,7 +31,7 @@ include = ["src/*", "pyproject.toml", "README.md", "LICENSE"]
 exclude = ["tests/*", "docs/*", "examples/*", "notebooks/*", "data/*", "dist/*", "build/*", "**/__pycache__", "src/**/logs/*", "src/resources/*", "src/utils/*"]
 
 [tool.poetry.dependencies]
-python = "^3.7"
+python = "^3.8"
 sqlalchemy = "^2.0.29"
 psycopg2-binary = "^2.9.9"
 python-dotenv = "^1.0.1"
@@ -47,7 +47,7 @@ SQLAlchemy-Utils = "^0.41.2"
 astroid = "^3.1.0"
 isort = "^5.13.2"
 black = "^24.3.0"
-build = "^1.2.1"
+#build = "^1.1.1"
 pytest = "^7.1.3"
 coverage = "^6.4.2"
 mypy = "^0.991"
