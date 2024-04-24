@@ -1,6 +1,7 @@
 """
 This module contains the CustomLogger class which is used for custom logging.
 """
+
 import logging
 import logging.config
 import sys

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 import unittest
-
+import os
 from sqlalchemy import create_engine, text
 
 from src.db.factory import DatabaseFactory
@@ -17,11 +17,11 @@ class TestPostgresImplementation(unittest.TestCase):
     db_url = "postgresql+psycopg2://my_user:postgrespassword@10.0.0.223:5432/test_db"
     db_config = {
         "type": "postgresql",
-        "db_name": "test_db",
-        "user": "my_user",
-        "password": "postgrespassword",
-        "host": "10.0.0.223",
-        "port": "5432",
+        "db_name": "testdb",
+        "user": os.getenv("POSTGRES_USER"),
+        "password": os.getenv("POSTGRES_PASSWORD"),
+        "host": os.getenv("POSTGRES_HOST"),
+        "port": os.getenv("POSTGRES_PORT"),
     }
     database_dropped = False
 
@@ -38,7 +38,7 @@ class TestPostgresImplementation(unittest.TestCase):
 
     def setUp(self):
         # Create a new database session for each test
-        self.db = DatabaseFactory.create_database(self.db_config)
+        self.db = DatabaseFactory.create(self.db_config)
         self.session = self.db.get_session()
         self.user_repo = UserRepository(self.db)
         # Begin a transaction for each test

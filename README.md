@@ -15,7 +15,7 @@ different databases.
 
 The project includes classes for handling different types of databases 
 such as PostgreSQL, MySQL, and MariaDB. Each of these classes implements 
-a common DatabaseInterface, ensuring a consistent method of interaction 
+a common Interface, ensuring a consistent method of interaction 
 regardless of the underlying database.  
 
 The CRUDRepository also includes a Repository class that provides generic 
@@ -45,7 +45,7 @@ classDiagram
         +password: str
     }
     Base <|-- User: Implements
-    class DatabaseInterface {
+    class IDatabase {
         +session: scoped_session
         +engine: Engine
         +connect(): Connection
@@ -63,13 +63,13 @@ classDiagram
         +connect(): Connection
         +get_session(): scoped_session
     }
-    DatabaseInterface <|-- PostgreSQLDatabase: Implements
-    DatabaseInterface <|-- MySQLDatabase: Implements
-    DatabaseInterface <|-- MariaDBDatabase: Implements
+    IDatabase <|-- PostgreSQLDatabase: Implements
+    IDatabase <|-- MySQLDatabase: Implements
+    IDatabase <|-- MariaDBDatabase: Implements
     class DatabaseFactory {
-        +create_database(config: dict)
+        +create(config: dict): IDatabase 
     }
-    class RepositoryInterface {
+    class IRepository {
         +create(entity: T) : T
         +read(id) : T
         +update(entity: T): T
@@ -81,27 +81,27 @@ classDiagram
         +update(entity: T): T
         +delete(entity: T): None
     }
-    RepositoryInterface <|-- Repository: Implements
+    IRepository <|-- Repository: Implements
 
     class UserRepository {
-        +__init__(database: DatabaseInterface)
+        +__init__(database: Database)
     }
     Repository <|-- UserRepository: Implements
     PostgreSQLDatabase "1" -- "1" Repository: Uses
     MySQLDatabase "1" -- "1" Repository: Uses
     MariaDBDatabase "1" -- "1" Repository: Uses
     UserRepository "1" -- "1" User: Manages
-    DatabaseFactory ..> PostgreSQLDatabase: << create >>
-    DatabaseFactory ..> MySQLDatabase: << create >>
-    DatabaseFactory ..> MariaDBDatabase: << create >>
+    DatabaseFactory --> PostgreSQLDatabase: << create >>
+    DatabaseFactory --> MySQLDatabase: << create >>
+    DatabaseFactory --> MariaDBDatabase: << create >>
 ```
 
 ### In this diagram (Class Diagram):
 
 - `Base` is a base class for all models, and `User` is a specific model that extends `Base`.
-- `DatabaseInterface` is an abstract base class that defines the interface for a database. `PostgreSQLDatabase`, `MySQLDatabase`, and `MariaDBDatabase` are concrete implementations of this interface.
+- `IDatabase` is an abstract base class that defines the interface for a database. `PostgreSQLDatabase`, `MySQLDatabase`, and `MariaDBDatabase` are concrete implementations of this interface.
 - `DatabaseFactory` is a factory class that creates instances of `PostgreSQLDatabase`, `MySQLDatabase`, or `MariaDBDatabase` based on the provided configuration.
-- `RepositoryInterface` is an abstract base class that defines the interface for a repository, and `Repository` is a generic implementation of this interface.
+- `IRepository` is an abstract base class that defines the interface for a repository, and `Repository` is a generic implementation of this interface.
 - `UserRepository` is a specific repository that manages `User` instances.
 - `PostgreSQLDatabase`, `MySQLDatabase`, and `MariaDBDatabase` are used by `Repository`, and `UserRepository` manages `User` instances.
 
@@ -122,15 +122,15 @@ sequenceDiagram
     participant User
     Client->>UserRepository: create(user)
     UserRepository->>Repository: create(user)
-    Repository->>DatabaseFactory: create_database(config)
+    Repository->>DatabaseFactory: create(config)
     alt db_name == 'postgresql'
-        DatabaseFactory-->>PostgreSQLDatabase: create_database(config)
+        DatabaseFactory-->>PostgreSQLDatabase: create(config)
         PostgreSQLDatabase-->>Repository: return session
     else db_name == 'mysql'
-        DatabaseFactory-->>MySQLDatabase: create_database(config)
+        DatabaseFactory-->>MySQLDatabase: create(config)
         MySQLDatabase-->>Repository: return session
     else db_name == 'mariadb'
-        DatabaseFactory-->>MariaDBDatabase: create_database(config)
+        DatabaseFactory-->>MariaDBDatabase: create(config)
         MariaDBDatabase-->>Repository: return session
     end
     Repository->>Session: add(user)
@@ -149,7 +149,7 @@ sequenceDiagram
 - `Repository` is a generic implementation of a repository.
 - `DatabaseFactory` is a factory class that creates instances of `PostgreSQLDatabase`, 
 `MySQLDatabase`, or `MariaDBDatabase` based on the provided configuration.
-- `PostgreSQLDatabase`, `MySQLDatabase`, and `MariaDBDatabase` are concrete implementations of a database interface.
+- `PostgreSQLDatabase`, `MySQLDatabase`, and `MariaDBDatabase` are concrete implementations of a IDatabase interface.
 - `Session` represents a database session.
 - `User` represents a user instance.
 
@@ -167,12 +167,12 @@ The user is then returned to the client.
 ```python
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-from src.db.database_interface import DatabaseFactory
+from src.db.idatabase import DatabaseFactory
 from typing import Optional
 from sqlalchemy import Column, Sequence, Integer, String
 from sqlalchemy.orm import Mapped
 from src.model.base import Base
-from db.database_interface import DatabaseInterface
+from db.idatabase import IDatabase
 from src.repo.repository import Repository
 
 
@@ -210,7 +210,7 @@ class User(Base):
 # Create a UserRepository instance with the database instance
 # ---------------------------------------------------------
 class UserRepository(Repository[User]):
-    def __init__(self, database: DatabaseInterface):
+    def __init__(self, database: IDatabase):
         super().__init__(database, User)
 
 
@@ -228,7 +228,7 @@ if __name__ == '__main__':
         'port': "5432"
     }
     # Create a new database instance
-    db = DatabaseFactory.create_database(db_config)
+    db = DatabaseFactory.create(db_config)
 
     # Create a UserRepository instance with the database instance
     user_repo = UserRepository(db)

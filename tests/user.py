@@ -4,6 +4,9 @@ from typing import Optional
 from sqlalchemy import Column, Sequence, Integer, String
 from sqlalchemy.orm import Mapped
 from src.model.base import Base
+from src.my_logger.logger import CustomLogger
+
+log = CustomLogger(__name__).get_logger("DEBUG")
 
 
 # ---------------------------------------------------------
@@ -32,3 +35,10 @@ class User(Base):
         return (
             f"User(id={self.id!r}, username={self.username!r}, password={self.password!r})"
         )
+
+
+if __name__ == "__main__":
+    user = User(username="admin", password="admin")
+    log.debug(user)
+    log.debug(user.to_dict())
+    log.debug(user.as_dict())

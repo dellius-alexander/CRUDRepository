@@ -3,7 +3,7 @@
 """
 This module provides classes for managing databases.
 """
-from src.db.database_interface import DatabaseInterface
+from src.db.idatabase import IDatabase
 from src.db.mariadb.db import MariaDBDatabase
 from src.db.mysql.db import MySQLDatabase
 from src.db.postgres.db import PostgreSQLDatabase
@@ -19,12 +19,12 @@ class DatabaseFactory:
     """
 
     @staticmethod
-    def create_database(config: dict) -> DatabaseInterface:
+    def create(config: dict) -> IDatabase:
         """
         Create a database instance based on the provided configuration.
 
         :param config: The configuration for the database.
-        :return: (DatabaseInterface) The created database instance.
+        :return: (IDatabase) The created database instance.
         """
         # Create the appropriate database instance based on the configuration
         # (e.g., PostgreSQL, MySQL, MariaDB, etc.)

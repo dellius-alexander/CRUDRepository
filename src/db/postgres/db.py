@@ -7,16 +7,16 @@ from sqlalchemy import create_engine, Connection, text
 from sqlalchemy.orm import scoped_session, sessionmaker
 from sqlalchemy_utils import database_exists, create_database
 
-from src.db.database_interface import DatabaseInterface
+from src.db.idatabase import IDatabase
 from src.model.base import Base
 from src.my_logger.logger import CustomLogger
 
 log = CustomLogger(__name__).get_logger("DEBUG")
 
 
-class PostgreSQLDatabase(DatabaseInterface):
+class PostgreSQLDatabase(IDatabase):
     """
-    This class provides a PostgreSQL implementation of the DatabaseInterface using sqlalchemy_utils.
+    This class provides a PostgreSQL implementation of the Database using sqlalchemy_utils.
     """
 
     def __init__(self, **kwargs):
@@ -30,11 +30,16 @@ class PostgreSQLDatabase(DatabaseInterface):
         host = kwargs.get("host")
         port = kwargs.get("port")
 
-        if not database_exists(f"postgresql://{user}:{password}@{host}:{port}/{self._db_name}"):
-            create_database(f"postgresql://{user}:{password}@{host}:{port}/{self._db_name}")
+        if not database_exists(
+            f"postgresql://{user}:{password}@{host}:{port}/{self._db_name}"
+        ):
+            create_database(
+                f"postgresql://{user}:{password}@{host}:{port}/{self._db_name}"
+            )
 
         self.engine = create_engine(
-            f"postgresql+psycopg2://{user}:{password}@{host}:{port}/{self._db_name}")
+            f"postgresql+psycopg2://{user}:{password}@{host}:{port}/{self._db_name}"
+        )
         self.session = scoped_session(sessionmaker(bind=self.engine))
         Base.metadata.create_all(self.engine)
 
@@ -51,4 +56,3 @@ class PostgreSQLDatabase(DatabaseInterface):
         :return: (scoped_session) The SQLAlchemy session for the PostgreSQL database.
         """
         return self.session
-

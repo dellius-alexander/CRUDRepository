@@ -1,0 +1,86 @@
+name: Build test and deploy to package repository
+env:
+  TZ: 'America/New_York'
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  TWINE_USERNAME: ${{ secrets.TWINE_USERNAME }}
+  TWINE_PASSWORD: ${{ secrets.TWINE_PASSWORD }}
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+jobs:
+  setup:
+    name: Setup Python Environment
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [ "3.7", "3.8", "3.9",  "3.10" ]
+    steps:
+      - name: Install Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+          architecture: x64
+
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install black pytest wheel setuptools build twine
+          if [ -f requirements.txt ]; then pip install  -r requirements.txt ; fi 
+
+      - name: Lint with black
+        run: |
+          black src
+          black --check src
+
+  test:
+    needs: setup
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [ "3.7", "3.8", "3.9",  "3.10" ]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup Docker Compose services
+        run: docker-compose up -d
+
+      - name: Build and test
+        run: /bin/bash deploy.sh 2>&1
+
+  deploy:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Upload build artifact
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        uses: actions/upload-artifact@v2
+        with:
+          name: Build-Results
+          path: |
+            dist
+            crud_repository.egg-info
+            README.md
+            LICENSE
+
+#      - name: Upload to PyPI
+#        env:
+#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#          TWINE_USERNAME: ${{ secrets.TWINE_USERNAME }}
+#          TWINE_PASSWORD: ${{ secrets.TWINE_PASSWORD }}
+#        run: |
+#          echo "[pypi]" > ~/.pypirc
+#          echo "  username = $TWINE_USERNAME" >> ~/.pypirc
+#          echo "  password = $TWINE_PASSWORD" >> ~/.pypirc
+#          python3 -m twine upload --skip-existing dist/* &>/dev/null

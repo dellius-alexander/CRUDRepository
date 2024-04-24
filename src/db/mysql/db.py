@@ -12,7 +12,7 @@ from sqlalchemy.orm import scoped_session
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy_utils import database_exists, create_database
 
-from src.db.database_interface import DatabaseInterface
+from src.db.idatabase import IDatabase
 from src.model.base import Base
 from src.my_logger.logger import CustomLogger
 
@@ -20,9 +20,9 @@ log = CustomLogger(__name__).get_logger("DEBUG")
 
 
 # ---------------------------------------------------------
-class MySQLDatabase(DatabaseInterface):
+class MySQLDatabase(IDatabase):
     """
-    This class provides a MySQL implementation of the DatabaseInterface.
+    This class provides a MySQL implementation of the Database.
     """
 
     def __init__(self, **kwargs):
@@ -36,7 +36,9 @@ class MySQLDatabase(DatabaseInterface):
             password = kwargs.get("password")
             host = kwargs.get("host")
             port = kwargs.get("port")
-            self.engine = create_engine(f"mysql+pymysql://{user}:{password}@{host}:{port}/{db_name}")
+            self.engine = create_engine(
+                f"mysql+pymysql://{user}:{password}@{host}:{port}/{db_name}"
+            )
             # Create the database if it doesn't exist
             if not database_exists(self.engine.url):
                 create_database(self.engine.url)

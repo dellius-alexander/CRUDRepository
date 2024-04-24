@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 import unittest
-
+import os
 from sqlalchemy import create_engine, text
 
 from db.factory import DatabaseFactory
@@ -14,7 +14,9 @@ log = CustomLogger(__name__).get_logger("DEBUG")
 
 
 class TestMySQLDatabase(unittest.TestCase):
-    db_url = 'mysql+pymysql://alpha:alphapass@10.0.0.223:3306/test_db'
+    db_url = (f'mysql+pymysql://'
+              f'{os.getenv("MYSQL_USER")}:{os.getenv("MYSQL_PASSWORD")}@'
+              f'{os.getenv("MYSQL_HOST")}:{os.getenv("MYSQL_PORT")}/testdb')
 
     @classmethod
     def setUpClass(cls):
@@ -31,13 +33,14 @@ class TestMySQLDatabase(unittest.TestCase):
         # Create a new database session for each test
         db_config = {
             "type": "mysql",
-            "db_name": "test_db",
-            "user": "alpha",
-            "password": "alphapass",
-            "host": "10.0.0.223",
-            "port": "3306",
+            "db_name": "testdb",
+            "user": os.getenv("MYSQL_USER"),
+            "password": os.getenv("MYSQL_PASSWORD"),
+            "host": os.getenv("MYSQL_HOST"),
+            "port": os.getenv("MYSQL_PORT")
         }
-        self.db = DatabaseFactory.create_database(db_config)
+        log.debug(f"db_config: {db_config}")
+        self.db = DatabaseFactory.create(db_config)
         self.session = self.db.get_session()
         self.user_repo = UserRepository(self.db)
 

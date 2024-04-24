@@ -14,7 +14,7 @@ from sqlalchemy.orm import scoped_session
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy_utils import database_exists, create_database
 
-from db.database_interface import DatabaseInterface
+from db.idatabase import IDatabase
 from src.model.base import Base
 from src.my_logger.logger import CustomLogger
 
@@ -22,9 +22,9 @@ log = CustomLogger(__name__).get_logger("DEBUG")
 
 
 # ---------------------------------------------------------
-class MariaDBDatabase(DatabaseInterface):
+class MariaDBDatabase(IDatabase):
     """
-    This class provides a MariaDB implementation of the DatabaseInterface.
+    This class provides a MariaDB implementation of the Database.
 
     Attributes:
         engine (Engine): The SQLAlchemy engine for the MariaDB database.
@@ -42,7 +42,9 @@ class MariaDBDatabase(DatabaseInterface):
             password = kwargs.get("password")
             host = kwargs.get("host")
             port = kwargs.get("port")
-            self.engine = create_engine(f"mariadb+pymysql://{user}:{password}@{host}:{port}/{db_name}")
+            self.engine = create_engine(
+                f"mariadb+pymysql://{user}:{password}@{host}:{port}/{db_name}"
+            )
             # Create the database if it doesn't exist
             if not database_exists(self.engine.url):
                 create_database(self.engine.url)
@@ -70,4 +72,3 @@ class MariaDBDatabase(DatabaseInterface):
         Get a session from the MariaDB database.
         """
         return self.session
-

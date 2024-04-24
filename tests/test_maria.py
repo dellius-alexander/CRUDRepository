@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+import os
 import unittest
-
 from sqlalchemy import create_engine, text
 
 from src.db.factory import DatabaseFactory
@@ -14,14 +14,14 @@ log = CustomLogger(__name__).get_logger("DEBUG")
 
 
 class TestMariaDB(unittest.TestCase):
-    db_url = "mariadb+pymysql://alpha:alphapass@10.0.0.223:3307/test_db"
+    db_url = "mariadb+pymysql://alpha:alphapassword@10.0.0.223:3307/testdb"
     db_config = {
         "type": "mariadb",
-        "db_name": "test_db",
+        "db_name": "testdb",
         "user": "root",
-        "password": "adminpassword",
-        "host": "10.0.0.223",
-        "port": "3307",
+        "password": os.getenv("MARIADB_PASSWORD"),
+        "host": os.getenv("MARIADB_HOST"),
+        "port": os.getenv("MARIADB_PORT"),
     }
     database_dropped = False
 
@@ -39,7 +39,7 @@ class TestMariaDB(unittest.TestCase):
 
     def setUp(self):
         # Create a new database session for each test
-        self.db = DatabaseFactory.create_database(self.db_config)
+        self.db = DatabaseFactory.create(self.db_config)
         self.session = self.db.get_session()
         self.user_repo = UserRepository(self.db)
         # Begin a transaction for each test

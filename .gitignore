@@ -15,3 +15,8 @@
 /.k8s
 
 /.devcontainer/certs/
+/build/
+/crud_repository.egg-info/
+/dist/
+/src/resources/
+/.github/workflows/pylint.yml

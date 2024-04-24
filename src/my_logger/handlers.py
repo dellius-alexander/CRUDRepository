@@ -1,9 +1,12 @@
 """
 This module contains custom logging handlers.
 """
+
 import logging.handlers
 import os
+import traceback
 import sys
+import time
 from logging import StreamHandler, DEBUG, Formatter
 from typing import Optional
 
@@ -15,6 +18,7 @@ class CustomStreamHandler(StreamHandler):
     """
     This class is a custom stream handler for logging.
     """
+
     def __init__(
         self,
         level: int = DEBUG,
@@ -27,8 +31,10 @@ class CustomStreamHandler(StreamHandler):
             super().setFormatter(formatter)
         except IOError as e:
             print(f"IOError: {e}")
+            traceback.print_exc()
         except ValueError as e:
             print(f"ValueError: {e}")
+            traceback.print_exc()
 
 
 # ------------------------------------------------------------------------
@@ -45,7 +51,10 @@ class CustomTimedRotatingFileHandler(logging.handlers.TimedRotatingFileHandler):
         """
 
         # Extract arguments using kwargs.get()
-        filename = kwargs.get("filename")
+        filename = kwargs.get(
+            "filename",
+            f'{os.getenv("ROOT_DIR")}/logs/log_{time.strftime("%Y%m%d%H%M%S")}.log',
+        )
         when = kwargs.get("when", "h")
         interval = kwargs.get("interval", 1)
         backup_count = kwargs.get("backup_count", 5)
@@ -72,40 +81,47 @@ class CustomTimedRotatingFileHandler(logging.handlers.TimedRotatingFileHandler):
             self.cleanup_old_logs()
         except IOError as e:
             print(f"IOError: {e}")
+            traceback.print_exc()
         except ValueError as e:
             print(f"ValueError: {e}")
+            traceback.print_exc()
 
     def getFilesToDelete(self):
         """
         Get the list of files to delete
         :return: list of files to delete
         """
-        log_dir = os.getenv("LOG_DIR")
-        # get the files in the log directory
-        file_names = os.listdir(log_dir)
-        # sort the array based on file creation time
-        file_names.sort(key=lambda x: os.path.getmtime(os.path.join(log_dir, x)))
-        # rebuild the file paths
-        file_names = [
-            os.path.join(str(log_dir), str(file_name)) for file_name in file_names
-        ]
+        try:
+            log_dir = os.getenv("LOG_DIR")
+            # get the files in the log directory
+            file_names = os.listdir(log_dir)
+            # sort the array based on file creation time
+            file_names.sort(key=lambda x: os.path.getmtime(os.path.join(log_dir, x)))
+            # rebuild the file paths
+            file_names = [
+                os.path.join(str(log_dir), str(file_name)) for file_name in file_names
+            ]
 
-        # Calculate the number of files to delete based on the backup count
-        num_files_to_delete = max(0, len(file_names) - self.backupCount)
+            # Calculate the number of files to delete based on the backup count
+            num_files_to_delete = max(0, len(file_names) - self.backupCount)
 
-        # Get the files to delete
-        files_to_delete = file_names[:num_files_to_delete]
+            # Get the files to delete
+            files_to_delete = file_names[:num_files_to_delete]
 
-        #     print(f"""
-        # Logging Dir: {log_dir}
-        # Base file name: {base_file_name}
-        # Backup count: {self.backup_count}
-        # Log Files: {file_names}
-        # Log Files Exceeded Limit: {num_files_to_delete}
-        # Sorted Files: {file_names}
-        # Files to delete: {files_to_delete}
-        #                 """)
-        return files_to_delete
+            #     print(f"""
+            # Logging Dir: {log_dir}
+            # Base file name: {base_file_name}
+            # Backup count: {self.backup_count}
+            # Log Files: {file_names}
+            # Log Files Exceeded Limit: {num_files_to_delete}
+            # Sorted Files: {file_names}
+            # Files to delete: {files_to_delete}
+            #                 """)
+            return files_to_delete
+        except Exception as e:
+            print(f"Error getting files to delete: {e}")
+            traceback.print_exc()
+            return []
 
     def emit(self, record: logging.LogRecord) -> None:
         """

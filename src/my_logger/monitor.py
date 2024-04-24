@@ -22,7 +22,9 @@ class CommandLogger:
         """
         log.debug(
             "Command %s with request id %s started on server %s",
-            event.command_name, event.request_id, event.connection_id
+            event.command_name,
+            event.request_id,
+            event.connection_id,
         )
 
     @classmethod
@@ -35,7 +37,10 @@ class CommandLogger:
         """
         log.debug(
             "Command %s with request id %s on server %s succeeded in %s microseconds",
-            event.command_name, event.request_id, event.connection_id, event.duration_micros
+            event.command_name,
+            event.request_id,
+            event.connection_id,
+            event.duration_micros,
         )
 
     @classmethod
@@ -48,5 +53,8 @@ class CommandLogger:
         """
         log.debug(
             "Command %s with request id %s on server %s failed in %s microseconds",
-            event.command_name, event.request_id, event.connection_id, event.duration_micros
+            event.command_name,
+            event.request_id,
+            event.connection_id,
+            event.duration_micros,
         )

@@ -12,7 +12,7 @@ log = CustomLogger(__name__).get_logger("DEBUG")
 
 
 # ---------------------------------------------------------
-class DatabaseInterface(ABC):
+class IDatabase(ABC):
     """
     This class defines the interface for a database.
 

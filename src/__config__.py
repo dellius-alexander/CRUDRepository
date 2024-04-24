@@ -3,22 +3,25 @@
 """
 This module is used for managing the configuration of the CRUDRepository project.
 """
+import json
+
 # --------------------------------------------------------------
 import time
 import os
 import dotenv
-
+from dotenv import load_dotenv, find_dotenv, dotenv_values
 
 # --------------------------------------------------------------
 # Load environment variables from .env file
 for filename in [".env"]:
-    dotenv.load_dotenv(
-        dotenv.find_dotenv(
+    load_dotenv(
+        find_dotenv(
             filename=filename,
             raise_error_if_not_found=True,
             usecwd=True,
         )
     )
+
 # --------------------------------------------------------------
 # Load environment variables
 # This is your Project Root
@@ -27,12 +30,15 @@ ROOT_DIR = os.path.dirname(os.path.abspath(__file__))  # ~/.../neuralNetworks/sr
 # This is your DATA Directory
 DATA_DIR = os.path.join(ROOT_DIR, "data")  # ~/.../neuralNetworks/src/data
 LOG_LEVEL = os.getenv("LOG_LEVEL", "DEBUG")
-LOG_FILE = os.getenv("LOG_FILE", f'{ROOT_DIR}/logs/log_{time.strftime("%Y%m%d_%H%M%S")}.log')
+LOG_FILE = f'{ROOT_DIR}/logs/log_{time.strftime("%Y%m%d%H%M%S")}.log'
+LOG_DIR = os.path.join(ROOT_DIR, "logs")  # ~/.../CRUDRepository/src/logs
 # --------------------------------------------------------------
 # Set environment variables
 os.environ.setdefault("ROOT_DIR", ROOT_DIR)
 os.environ.setdefault("LOG_FILE", LOG_FILE)
 os.environ.setdefault("LOG_LEVEL", LOG_LEVEL)
+os.environ.setdefault("LOG_DIR", LOG_DIR)
+print(json.dumps(dotenv_values(), indent=2, sort_keys=True))
 # --------------------------------------------------------------
 # Define log colors
 log_colors_config = {
@@ -57,7 +63,7 @@ log_config = {
         "colored": {
             "()": "colorlog.ColoredFormatter",
             "format": "%(log_color)s[%(asctime)s][%(levelname)s][%(name)s][%(lineno)s]: "
-                      "\n%(message)s",
+            "\n%(message)s",
             "datefmt": "%Y-%m-%d %H:%M:%S",
             "log_colors": log_colors_config,
         },

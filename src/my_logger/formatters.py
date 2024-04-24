@@ -1,6 +1,7 @@
 """
 This module contains classes and functions for formatting log messages.
 """
+
 from logging import Formatter, LogRecord
 from typing import Literal, Optional, Any
 
@@ -50,7 +51,9 @@ class CustomFormatter(Formatter):
         :param record: The record whose message is to be formatted.
         :return: Formatted message as text.
         """
-        return f"{record.asctime} - {record.name} - {record.levelname} - {record.message}"
+        return (
+            f"{record.asctime} - {record.name} - {record.levelname} - {record.message}"
+        )
 
     def format_record(self, record: LogRecord):
         """Format the log record and return the formatted record
