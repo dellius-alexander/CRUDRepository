@@ -3,12 +3,10 @@
 """
 This module is used for managing the configuration of the CRUDRepository project.
 """
-import json
-
 # --------------------------------------------------------------
 import time
 import os
-import dotenv
+import json
 from dotenv import load_dotenv, find_dotenv, dotenv_values
 
 # --------------------------------------------------------------

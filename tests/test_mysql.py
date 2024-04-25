@@ -4,7 +4,7 @@ import unittest
 import os
 from sqlalchemy import create_engine, text
 
-from db.factory import DatabaseFactory
+from src.db.factory import DatabaseFactory
 from src.model.base import Base
 from src.my_logger.logger import CustomLogger
 from tests.repository import UserRepository

@@ -14,7 +14,7 @@ from sqlalchemy.orm import scoped_session
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy_utils import database_exists, create_database
 
-from db.idatabase import IDatabase
+from src.db.idatabase import IDatabase
 from src.model.base import Base
 from src.my_logger.logger import CustomLogger
 
