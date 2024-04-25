@@ -25,10 +25,10 @@ for filename in [".env"]:
 # --------------------------------------------------------------
 # Load environment variables
 # This is your Project Root
-ROOT_DIR = os.path.dirname(os.path.abspath(__file__))  # ~/.../neuralNetworks/src
+ROOT_DIR = os.path.dirname(os.path.abspath(__file__))  # ~/.../CRUDRepository/src
 # --------------------------------------------------------------
 # This is your DATA Directory
-DATA_DIR = os.path.join(ROOT_DIR, "data")  # ~/.../neuralNetworks/src/data
+DATA_DIR = os.path.join(ROOT_DIR, "data")  # ~/.../CRUDRepository/src/data
 LOG_LEVEL = os.getenv("LOG_LEVEL", "DEBUG")
 LOG_FILE = f'{ROOT_DIR}/logs/log_{time.strftime("%Y%m%d%H%M%S")}.log'
 LOG_DIR = os.path.join(ROOT_DIR, "logs")  # ~/.../CRUDRepository/src/logs

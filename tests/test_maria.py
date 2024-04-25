@@ -14,14 +14,15 @@ log = CustomLogger(__name__).get_logger("DEBUG")
 
 
 class TestMariaDB(unittest.TestCase):
-    db_url = "mariadb+pymysql://alpha:alphapassword@10.0.0.223:3307/testdb"
+    db_url = f'mariadb+pymysql://{os.getenv("MARIADB_USER")}:{os.getenv("MARIADB_PASSWORD")}' \
+                f'@{os.getenv("MARIADB_HOST")}:{os.getenv("MARIADB_PORT")}/{os.getenv("MARIADB_DATABASE")}'
     db_config = {
         "type": "mariadb",
-        "db_name": "testdb",
-        "user": "root",
+        "db_name": os.getenv("MARIADB_DATABASE"),
+        "user": os.getenv("MARIADB_USER"),
         "password": os.getenv("MARIADB_PASSWORD"),
         "host": os.getenv("MARIADB_HOST"),
-        "port": os.getenv("MARIADB_PORT"),
+        "port": int(os.getenv("MARIADB_PORT")),
     }
     database_dropped = False
 

@@ -243,8 +243,3 @@ if __name__ == '__main__':
     # Add the user to the database
     user_repo.create(user)
 ```
-
-
----
-
-

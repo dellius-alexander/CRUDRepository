@@ -14,10 +14,11 @@ log = CustomLogger(__name__).get_logger("DEBUG")
 
 
 class TestPostgresImplementation(unittest.TestCase):
-    db_url = "postgresql+psycopg2://my_user:postgrespassword@10.0.0.223:5432/test_db"
+    db_url = (f'postgresql+psycopg2://{os.getenv("POSTGRES_USER")}:{os.getenv("POSTGRES_PASSWORD")}'
+              f'@{os.getenv("POSTGRES_HOST")}:{os.getenv("POSTGRES_HOST")}/{os.getenv("POSTGRES_DB")}')
     db_config = {
         "type": "postgresql",
-        "db_name": "testdb",
+        "db_name": os.getenv("POSTGRES_DB"),
         "user": os.getenv("POSTGRES_USER"),
         "password": os.getenv("POSTGRES_PASSWORD"),
         "host": os.getenv("POSTGRES_HOST"),
