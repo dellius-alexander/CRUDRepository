@@ -79,4 +79,4 @@ jobs:
 #          TWINE_USERNAME: ${{ secrets.TWINE_USERNAME }}
 #          TWINE_PASSWORD: ${{ secrets.TWINE_PASSWORD }}
 #        run: |
-#          poetry publish --build -u $TWINE_USERNAME -p $TWINE_PASSWORD
+#          poetry publish --build -u $TWINE_USERNAME -p $TWINE_PASSWORD &>/dev/null
