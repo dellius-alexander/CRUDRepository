@@ -46,9 +46,6 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Setup Docker Compose services
-        run: docker-compose up -d
-
-      - name: Build and test
         run: |
           printf """
           LOG_LEVEL="DEBUG"
@@ -84,6 +81,10 @@ jobs:
           # ##########################################################
           """ > .env
           cat .env
+          docker-compose up -d
+
+      - name: Build and test
+        run: |
           pip install poetry
           poetry install
           poetry build
