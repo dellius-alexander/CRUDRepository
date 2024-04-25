@@ -73,7 +73,7 @@ log_config = {
             "formatter": "colored",
         },
         "file_handler": {
-            "class": "my_logger.handlers.CustomTimedRotatingFileHandler",
+            "class": "src.my_logger.handlers.CustomTimedRotatingFileHandler",
             "filename": f"{LOG_FILE}",
             "when": "midnight",
             "interval": 1,
