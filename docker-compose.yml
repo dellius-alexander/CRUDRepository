@@ -10,18 +10,18 @@ networks:
     driver: bridge
 
 services:
-  nginx-proxy:
-    #    image: nginx:latest
-    build:
-      context: .
-      dockerfile: .devcontainer/nginx-proxy/Dockerfile
-    container_name: nginx-proxy
-    hostname: www.example.com
-    ports:
-      - "80:80"
-      - "443:443"
-    networks:
-      - crud_network
+#  nginx-proxy:
+#    #    image: nginx:latest
+#    build:
+#      context: .
+#      dockerfile: .devcontainer/nginx-proxy/Dockerfile
+#    container_name: nginx-proxy
+#    hostname: www.example.com
+#    ports:
+#      - "80:80"
+#      - "443:443"
+#    networks:
+#      - crud_network
 
   # Postgres Database Service
   postgres:
@@ -87,17 +87,17 @@ services:
     networks:
       - crud_network
 
-  # DBMS Service (Adminer)
-  adminer:
-#    image: adminer
-    build:
-      context: .
-      dockerfile: .devcontainer/adminer/Dockerfile
-    restart: always
-    expose:
-      - "8080"
-    ports:
-      - 8080:8080
-    networks:
-      - crud_network
+#  # DBMS Service (Adminer)
+#  adminer:
+##    image: adminer
+#    build:
+#      context: .
+#      dockerfile: .devcontainer/adminer/Dockerfile
+#    restart: always
+#    expose:
+#      - "8080"
+#    ports:
+#      - 8080:8080
+#    networks:
+#      - crud_network
 
