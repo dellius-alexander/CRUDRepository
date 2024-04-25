@@ -49,7 +49,11 @@ jobs:
         run: docker-compose up -d
 
       - name: Build and test
-        run: poetry run pytest
+        run: |
+          pip install poetry
+          poetry install
+          poetry build
+          poetry run pytest
 
   deploy:
     needs: test
