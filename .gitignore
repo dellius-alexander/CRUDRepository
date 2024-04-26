@@ -13,7 +13,11 @@
 /.devcontainer/Tables.yaml
 /.devcontainer/backup
 /.k8s
+# Ignore all files in the src/logs directory
+/src/logs/**
 
+# But do not ignore the directory itself
+!/src/logs/.gitkeep
 /.devcontainer/certs/
 /build/
 /crud_repository.egg-info/

@@ -28,6 +28,16 @@ class CustomLogger(logging.Logger):
         if config is None:
             config = log_config
         try:
+            # check for and create log directory defined in config
+            if "handlers" in config:
+                for file_handler in config["handlers"]:
+                    if "filename" in config["handlers"][file_handler]:
+                        log_dir = config["handlers"][file_handler]["filename"]
+                        log_dir = log_dir[: log_dir.rfind("/")]
+                        if log_dir:
+                            import os
+
+                            os.makedirs(log_dir, exist_ok=True)
             logging.config.dictConfig(config)
         except ValueError as e:
             logging.error("Failed to configure logger: %s", e)
