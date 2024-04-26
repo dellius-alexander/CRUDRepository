@@ -82,6 +82,7 @@ jobs:
           """ > .env
           cat .env
           docker-compose up -d
+          sleep 60
       # Task for installing dependencies
       - name: Install dependencies
         run: |
