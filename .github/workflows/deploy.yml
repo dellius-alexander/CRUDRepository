@@ -59,7 +59,7 @@ jobs:
           # ##########################################################
           MYSQL_ROOT_PASSWORD=alphapassword
           MYSQL_DATABASE=testdb
-          MYSQL_USER=root
+          MYSQL_USER=alpha
           MYSQL_PASSWORD=alphapassword
           MYSQL_ALLOW_EMPTY_PASSWORD=no
           MYSQL_RANDOM_ROOT_PASSWORD=no
