@@ -54,7 +54,7 @@ jobs:
           MARIADB_PASSWORD=alphapassword
           MARIADB_ROOT_PASSWORD=alphapassword
           MARIADB_ROOT_PASSWORD_HASH=""
-          MARIADB_HOST="127.0.0.1"
+          MARIADB_HOST=127.0.0.1
           MARIADB_PORT=3307
           # ##########################################################
           MYSQL_ROOT_PASSWORD=alphapassword
@@ -65,7 +65,7 @@ jobs:
           MYSQL_RANDOM_ROOT_PASSWORD=no
           MYSQL_ONETIME_PASSWORD=no
           MYSQL_INITDB_SKIP_TZINFO=no
-          MYSQL_HOST="127.0.0.1"
+          MYSQL_HOST=0.0.0.0
           MYSQL_PORT=3306
           # ##########################################################
           POSTGRES_DB=testdb
@@ -77,7 +77,7 @@ jobs:
           PGDATA=/var/lib/postgresql/data
           POSTGRES_PORT=5432
           POSTGRES_VERSION=13
-          POSTGRES_HOST="127.0.0.1"
+          POSTGRES_HOST=127.0.0.1
           # ##########################################################
           """ > .env
           cat .env
