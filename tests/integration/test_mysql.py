@@ -34,7 +34,7 @@ class TestMySQLDatabase(unittest.TestCase):
         db_config = {
             "type": "mysql",
             "db_name": os.getenv("MYSQL_DATABASE"),
-            "user": os.getenv("MYSQL_USER"),
+            "user": "root",
             "password": os.getenv("MYSQL_PASSWORD"),
             "host": os.getenv("MYSQL_HOST"),
             "port": os.getenv("MYSQL_PORT")
