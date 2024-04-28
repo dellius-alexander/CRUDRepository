@@ -98,10 +98,16 @@ jobs:
           black src
           black --check src
 
+      # Task for running tests
       - name: Build and test
         run: |
-          poetry build
-          poetry run pytest
+          # Run tests
+          if python3 -m pytest tests/ 2>&1 ; then
+              echo "Testsing completed Successfully."
+          else
+              echo "Tests failed to complete successfully."
+              exit 1
+          fi
 
   deploy:
     needs: test
@@ -112,6 +118,17 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+
+      - name: Build package artifact
+        run: |
+          # Build the package
+          if python3 setup.py sdist bdist_wheel 2>&1 ; then
+              echo "Build and test ran Successfully."
+          else
+              echo "Build failed to complete successfully."
+              exit 1
+          fi
+          ls -l dist
 
       - name: Upload build artifact
         env:
