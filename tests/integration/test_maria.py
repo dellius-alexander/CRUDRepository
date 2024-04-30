@@ -23,6 +23,7 @@ class TestMariaDB(unittest.TestCase):
         "password": os.getenv("MARIADB_PASSWORD"),
         "host": os.getenv("MARIADB_HOST"),
         "port": int(os.getenv("MARIADB_PORT")),
+        "url": db_url,
     }
     database_dropped = False
 
@@ -39,6 +40,7 @@ class TestMariaDB(unittest.TestCase):
             print(f"Error creating database: {e}")
 
     def setUp(self):
+        log.debug(f"db_config: {self.db_config}")
         # Create a new database session for each test
         self.db = DatabaseFactory.create(self.db_config)
         self.session = self.db.get_session()

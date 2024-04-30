@@ -23,6 +23,7 @@ class TestPostgresImplementation(unittest.TestCase):
         "password": os.getenv("POSTGRES_PASSWORD"),
         "host": os.getenv("POSTGRES_HOST"),
         "port": os.getenv("POSTGRES_PORT"),
+        "url": db_url,
     }
     database_dropped = False
 
@@ -32,12 +33,13 @@ class TestPostgresImplementation(unittest.TestCase):
             engine = create_engine(cls.db_url)
             # Create the database and the table
             with engine.connect() as conn:
-                conn.execute(text("CREATE DATABASE test_db"))
+                conn.execute(text("CREATE DATABASE test_db;"))
             Base.metadata.create_all(engine)
         except Exception as e:
             log.error(f"Error creating database: {e}")
 
     def setUp(self):
+        log.debug(f"db_config: {self.db_config}")
         # Create a new database session for each test
         self.db = DatabaseFactory.create(self.db_config)
         self.session = self.db.get_session()

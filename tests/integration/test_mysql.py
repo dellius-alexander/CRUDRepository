@@ -17,6 +17,15 @@ class TestMySQLDatabase(unittest.TestCase):
     db_url = (f'mysql+pymysql://'
               f'{os.getenv("MYSQL_USER")}:{os.getenv("MYSQL_PASSWORD")}@'
               f'{os.getenv("MYSQL_HOST")}:{os.getenv("MYSQL_PORT")}/{os.getenv("MYSQL_DATABASE")}')
+    # Create a new database session for each test
+    db_config = {
+        "type": "mysql",
+        "db_name": "testdb",
+        "user": "root",
+        "password": os.getenv("MYSQL_PASSWORD"),
+        "host": os.getenv("MYSQL_HOST"),
+        "port": os.getenv("MYSQL_PORT")
+    }
 
     @classmethod
     def setUpClass(cls):
@@ -30,19 +39,13 @@ class TestMySQLDatabase(unittest.TestCase):
             log.error(f"Error creating database: {e}")
 
     def setUp(self):
+        log.debug(f"db_config: {self.db_config}")
         # Create a new database session for each test
-        db_config = {
-            "type": "mysql",
-            "db_name": os.getenv("MYSQL_DATABASE"),
-            "user": "root",
-            "password": os.getenv("MYSQL_PASSWORD"),
-            "host": os.getenv("MYSQL_HOST"),
-            "port": os.getenv("MYSQL_PORT")
-        }
-        log.debug(f"db_config: {db_config}")
-        self.db = DatabaseFactory.create(db_config)
+        self.db = DatabaseFactory.create(self.db_config)
         self.session = self.db.get_session()
         self.user_repo = UserRepository(self.db)
+        # Begin a transaction for each test
+        self.session.begin_nested()
 
     @classmethod
     def tearDownClass(cls):

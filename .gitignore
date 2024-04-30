@@ -26,3 +26,4 @@
 /.github/workflows/pylint.yml
 /poetry.lock
 /poetry.toml
+/.devcontainer/nginx-proxy/

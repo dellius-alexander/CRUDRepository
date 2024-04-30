@@ -24,22 +24,17 @@ class PostgreSQLDatabase(IDatabase):
         Initialize the PostgreSQLDatabase.
         :param kwargs: (dict) The keyword arguments for the PostgreSQL database.
         """
-        self._db_name = kwargs.get("db_name")
-        user = kwargs.get("user")
-        password = kwargs.get("password")
-        host = kwargs.get("host")
-        port = kwargs.get("port")
-
-        if not database_exists(
-            f"postgresql://{user}:{password}@{host}:{port}/{self._db_name}"
-        ):
-            create_database(
-                f"postgresql://{user}:{password}@{host}:{port}/{self._db_name}"
-            )
-
-        self.engine = create_engine(
-            f"postgresql+psycopg2://{user}:{password}@{host}:{port}/{self._db_name}"
-        )
+        db_name = kwargs.get("db_name", None)
+        user = kwargs.get("user", None)
+        password = kwargs.get("password", None)
+        host = kwargs.get("host", None)
+        port = kwargs.get("port", None)
+        url = kwargs.get("url", f"postgresql+psycopg2://{user}:{password}@{host}:{port}/{db_name}")
+        # Create the database if it doesn't exist
+        if not database_exists(url):
+            create_database(url)
+        # Create the engine and session
+        self.engine = create_engine(url)
         self.session = scoped_session(sessionmaker(bind=self.engine))
         Base.metadata.create_all(self.engine)
 

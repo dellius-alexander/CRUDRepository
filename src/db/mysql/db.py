@@ -31,18 +31,17 @@ class MySQLDatabase(IDatabase):
         :param kwargs: (dict) The keyword arguments for the PostgreSQL database.
         """
         try:
-            db_name = kwargs.get("db_name")
-            user = kwargs.get("user")
-            password = kwargs.get("password")
-            host = kwargs.get("host")
-            port = kwargs.get("port")
-            self.engine = create_engine(
-                f"mysql+pymysql://{user}:{password}@{host}:{port}/{db_name}"
-            )
+            db_name = kwargs.get("db_name", None)
+            user = kwargs.get("user", None)
+            password = kwargs.get("password", None)
+            host = kwargs.get("host", None)
+            port = kwargs.get("port", None)
+            url = kwargs.get("url", f"mysql+pymysql://{user}:{password}@{host}:{port}/{db_name}")
             # Create the database if it doesn't exist
-            if not database_exists(self.engine.url):
-                create_database(self.engine.url)
-            # Create the session
+            if not database_exists(url):
+                create_database(url)
+            # Create the engine and session
+            self.engine = create_engine(url)
             self.session = scoped_session(sessionmaker(bind=self.engine))
             # Add this line to create all tables based on Base class
             Base.metadata.create_all(self.engine)

@@ -13,7 +13,7 @@ T = TypeVar("T", bound=Base)
 
 
 # ---------------------------------------------------------
-class RepositoryInterface(ABC):
+class IRepository(ABC, Generic[T]):
     @abstractmethod
     def create(self, entity: T) -> T:
         pass
@@ -32,7 +32,7 @@ class RepositoryInterface(ABC):
 
 
 # ---------------------------------------------------------
-class Repository(RepositoryInterface, Generic[T]):
+class Repository(IRepository[T]):
     def __init__(self, database: IDatabase, model: type[T]):
         self.database = database
         self.model = model

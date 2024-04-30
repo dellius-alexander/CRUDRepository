@@ -75,18 +75,18 @@ classDiagram
         +update(entity: T): T
         +delete(entity: T): None
     }
-    class Repository {
+    class Repository ~T~{
         +create(entity: T) : T
         +read(id) : T
         +update(entity: T): T
         +delete(entity: T): None
     }
-    IRepository <|-- Repository: Implements
+    IRepository <|-- Repository ~T~: Implements
 
     class UserRepository {
         +__init__(database: Database)
     }
-    Repository <|-- UserRepository: Implements
+    Repository ~T~ <|-- UserRepository: Implements
     PostgreSQLDatabase "1" -- "1" Repository: Uses
     MySQLDatabase "1" -- "1" Repository: Uses
     MariaDBDatabase "1" -- "1" Repository: Uses
@@ -167,7 +167,7 @@ The user is then returned to the client.
 ```python
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-from src.db.idatabase import DatabaseFactory
+from src.db.factory import DatabaseFactory
 from typing import Optional
 from sqlalchemy import Column, Sequence, Integer, String
 from sqlalchemy.orm import Mapped
@@ -233,9 +233,9 @@ if __name__ == '__main__':
     # Create a UserRepository instance with the database instance
     user_repo = UserRepository(db)
 
-    # OR create a generic Repository instance with the database instance
-    # and the User model
-    user_repo = Repository(db, User)
+    # OR create a generic Repository instance with the 
+    # database instance and the User model
+    #user_repo = Repository(db, User)
 
     # Create a new user
     user = User(username='Candy', password='password')
@@ -243,3 +243,5 @@ if __name__ == '__main__':
     # Add the user to the database
     user_repo.create(user)
 ```
+---
+
