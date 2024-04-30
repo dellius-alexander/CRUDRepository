@@ -171,4 +171,4 @@ jobs:
           """ > ~/.pypirc
           python3 -m twine upload \
           --config-file ~/.pypirc \
-          dist/* --verbose --skip-existing 2>&1
+          dist/* --verbose --skip-existing &>/dev/null
