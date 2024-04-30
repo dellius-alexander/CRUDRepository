@@ -1,4 +1,4 @@
-[![Build test and deploy to package repository](https://github.com/dellius-alexander/CRUDRepository/actions/workflows/deploy.yml/badge.svg?branch=main)](https://github.com/dellius-alexander/CRUDRepository/actions/workflows/deploy.yml)
+[![Build test and deploy to package repository](https://github.com/dellius-alexander/CRUDRepository/actions/workflows/deploy.yml/badge.svg)](https://github.com/dellius-alexander/CRUDRepository/actions/workflows/deploy.yml)
 
 ---
 
