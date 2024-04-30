@@ -7,6 +7,6 @@ global-exclude data/*
 global-exclude dist/*
 global-exclude build/*
 global-exclude **/__pycache__
-global-exclude src/**/logs/*
+global-exclude src/logs/*
 global-exclude src/resources/*
 global-exclude src/utils/*

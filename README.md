@@ -45,22 +45,42 @@ classDiagram
         +username: str
         +password: str
     }
-    Base <|-- User: Implements
     class IDatabase {
-        +session: scoped_session
-        +engine: Engine
         +connect(): Connection
         +get_session(): scoped_session
     }
+    class IRepository ~Base as T~ {
+        +create(entity: T) : T
+        +read(id) : T
+        +update(entity: T): T
+        +delete(entity: T): None
+    }
+    class Repository {
+        #database: IDatabase
+        #model: T
+        +create(entity: T) : T
+        +read(id) : T
+        +update(entity: T): T
+        +delete(entity: T): None
+    }
+    class UserRepository {
+        +__init__(database: IDatabase)
+    }
     class PostgreSQLDatabase {
+        #session: scoped_session
+        #engine: Engine
         +connect(): Connection
         +get_session(): scoped_session
     }
     class MySQLDatabase {
+        #session: scoped_session
+        #engine: Engine
         +connect(): Connection
         +get_session(): scoped_session
     }
     class MariaDBDatabase {
+        #session: scoped_session
+        #engine: Engine
         +connect(): Connection
         +get_session(): scoped_session
     }
@@ -68,30 +88,16 @@ classDiagram
     IDatabase <|-- MySQLDatabase: Implements
     IDatabase <|-- MariaDBDatabase: Implements
     class DatabaseFactory {
-        +create(config: dict): IDatabase 
+        +create(config: dict): IDatabase
     }
-    class IRepository {
-        +create(entity: T) : T
-        +read(id) : T
-        +update(entity: T): T
-        +delete(entity: T): None
-    }
-    class Repository ~T~{
-        +create(entity: T) : T
-        +read(id) : T
-        +update(entity: T): T
-        +delete(entity: T): None
-    }
-    IRepository <|-- Repository ~T~: Implements
-
-    class UserRepository {
-        +__init__(database: Database)
-    }
-    Repository ~T~ <|-- UserRepository: Implements
+    
+    IRepository ~Base as T~ <|-- Repository : Implements
+    Repository <|-- UserRepository: Implements
     PostgreSQLDatabase "1" -- "1" Repository: Uses
     MySQLDatabase "1" -- "1" Repository: Uses
     MariaDBDatabase "1" -- "1" Repository: Uses
     UserRepository "1" -- "1" User: Manages
+    Base <|-- User: Implements
     DatabaseFactory --> PostgreSQLDatabase: << create >>
     DatabaseFactory --> MySQLDatabase: << create >>
     DatabaseFactory --> MariaDBDatabase: << create >>
@@ -102,9 +108,9 @@ classDiagram
 - `Base` is a base class for all models, and `User` is a specific model that extends `Base`.
 - `IDatabase` is an abstract base class that defines the interface for a database. `PostgreSQLDatabase`, `MySQLDatabase`, and `MariaDBDatabase` are concrete implementations of this interface.
 - `DatabaseFactory` is a factory class that creates instances of `PostgreSQLDatabase`, `MySQLDatabase`, or `MariaDBDatabase` based on the provided configuration.
-- `IRepository` is an abstract base class that defines the interface for a repository, and `Repository` is a generic implementation of this interface.
+- `IRepository ~T~` is an abstract base class that defines the interface for a repository, and `Repository ~Base~` is a generic implementation of this interface that is bound to the `Base` model class.
 - `UserRepository` is a specific repository that manages `User` instances.
-- `PostgreSQLDatabase`, `MySQLDatabase`, and `MariaDBDatabase` are used by `Repository`, and `UserRepository` manages `User` instances.
+- `PostgreSQLDatabase`, `MySQLDatabase`, and `MariaDBDatabase` are used by `Repository ~Base~`, and `UserRepository` manages `User` instances.
 
 ---
 
@@ -121,47 +127,111 @@ sequenceDiagram
     participant MariaDBDatabase
     participant Session
     participant User
-    Client->>UserRepository: create(user)
-    UserRepository->>Repository: create(user)
-    Repository->>DatabaseFactory: create(config)
-    alt db_name == 'postgresql'
-        DatabaseFactory-->>PostgreSQLDatabase: create(config)
-        PostgreSQLDatabase-->>Repository: return session
-    else db_name == 'mysql'
-        DatabaseFactory-->>MySQLDatabase: create(config)
-        MySQLDatabase-->>Repository: return session
-    else db_name == 'mariadb'
-        DatabaseFactory-->>MariaDBDatabase: create(config)
-        MariaDBDatabase-->>Repository: return session
+    Client->>UserRepository: performOperation(user, operation)
+    alt operation == 'create'
+        UserRepository->>Repository: create(user)
+        Repository->>DatabaseFactory: create(config)
+        alt db_name == 'postgresql'
+            DatabaseFactory-->>PostgreSQLDatabase: create(config)
+            PostgreSQLDatabase-->>Repository: return session
+        else db_name == 'mysql'
+            DatabaseFactory-->>MySQLDatabase: create(config)
+            MySQLDatabase-->>Repository: return session
+        else db_name == 'mariadb'
+            DatabaseFactory-->>MariaDBDatabase: create(config)
+            MariaDBDatabase-->>Repository: return session
+        end
+        Repository->>Session: add(user)
+        Session->>User: add(user)
+        Repository->>Session: commit()
+        Session-->>Repository: commit successful
+        Repository-->>UserRepository: return user
+        UserRepository-->>Client: return user
+    else operation == 'read'
+        UserRepository->>Repository: read(id)
+        Repository->>DatabaseFactory: create(config)
+        alt db_name == 'postgresql'
+            DatabaseFactory-->>PostgreSQLDatabase: create(config)
+            PostgreSQLDatabase-->>Repository: return session
+        else db_name == 'mysql'
+            DatabaseFactory-->>MySQLDatabase: create(config)
+            MySQLDatabase-->>Repository: return session
+        else db_name == 'mariadb'
+            DatabaseFactory-->>MariaDBDatabase: create(config)
+            MariaDBDatabase-->>Repository: return session
+        end
+        Repository->>Session: get(user)
+        Session-->>Repository: return user
+        Repository-->>UserRepository: return user
+        UserRepository-->>Client: return user
+    else operation == 'update'
+        UserRepository->>Repository: update(user)
+        Repository->>DatabaseFactory: create(config)
+        alt db_name == 'postgresql'
+            DatabaseFactory-->>PostgreSQLDatabase: create(config)
+            PostgreSQLDatabase-->>Repository: return session
+        else db_name == 'mysql'
+            DatabaseFactory-->>MySQLDatabase: create(config)
+            MySQLDatabase-->>Repository: return session
+        else db_name == 'mariadb'
+            DatabaseFactory-->>MariaDBDatabase: create(config)
+            MariaDBDatabase-->>Repository: return session
+        end
+        Repository->>Session: update(user)
+        Session->>User: update(user)
+        Repository->>Session: commit()
+        Session-->>Repository: commit successful
+        Repository-->>UserRepository: return user
+        UserRepository-->>Client: return user
+    else operation == 'delete'
+        UserRepository->>Repository: delete(user)
+        Repository->>DatabaseFactory: create(config)
+        alt db_name == 'postgresql'
+            DatabaseFactory-->>PostgreSQLDatabase: create(config)
+            PostgreSQLDatabase-->>Repository: return session
+        else db_name == 'mysql'
+            DatabaseFactory-->>MySQLDatabase: create(config)
+            MySQLDatabase-->>Repository: return session
+        else db_name == 'mariadb'
+            DatabaseFactory-->>MariaDBDatabase: create(config)
+            MariaDBDatabase-->>Repository: return session
+        end
+        Repository->>Session: delete(user)
+        Session->>User: delete(user)
+        Repository->>Session: commit()
+        Session-->>Repository: commit successful
+        Repository-->>UserRepository: return success
+        UserRepository-->>Client: return success
     end
-    Repository->>Session: add(user)
-    Session->>User: add(user)
-    Repository->>Session: commit()
-    Session-->>Repository: commit successful
-    Repository-->>UserRepository: return user
-    UserRepository-->>Client: return user
 ```
 
 
 ### In this diagram (Sequence Diagram):
 
+
 - `Client` represents the client code that interacts with the `UserRepository`.
 - `UserRepository` is a specific repository that manages `User` instances.
 - `Repository` is a generic implementation of a repository.
-- `DatabaseFactory` is a factory class that creates instances of `PostgreSQLDatabase`, 
-`MySQLDatabase`, or `MariaDBDatabase` based on the provided configuration.
+- `DatabaseFactory` is a factory class that creates instances of `PostgreSQLDatabase`, `MySQLDatabase`, or `MariaDBDatabase` based on the provided configuration.
 - `PostgreSQLDatabase`, `MySQLDatabase`, and `MariaDBDatabase` are concrete implementations of a IDatabase interface.
 - `Session` represents a database session.
 - `User` represents a user instance.
 
-The sequence diagram shows the process of creating a new user. The client calls the `create` 
-method on the `UserRepository`, which in turn calls the `create` method on the `Repository`. 
-The `Repository` gets a session from the `DatabaseFactory` which creates an instance of 
-either `PostgreSQLDatabase`, `MySQLDatabase`, or `MariaDBDatabase` based on the provided 
-configuration. The `Repository` adds the user to the session, and commits the session. 
-The user is then returned to the client.
+The sequence diagram shows the process of performing a CRUD operation on a user. The client 
+calls the `performOperation` method on the `UserRepository`, which in turn calls the 
+corresponding method (create, read, update, or delete) on the `Repository`. The `Repository` 
+gets a session from the `DatabaseFactory` which creates an instance of either `PostgreSQLDatabase`, 
+`MySQLDatabase`, or `MariaDBDatabase` based on the provided configuration. The `Repository` 
+then performs the operation on the user in the session, and commits the session. The result 
+of the operation is then returned to the client.
 
 ---
+
+## Installation
+    
+```bash
+pip install crud-repository
+```
 
 ## Code Example Usage
 

@@ -1,16 +1,19 @@
 [build-system]
-requires = ["poetry-core>=1.0.0"]
-build-backend = "poetry.core.masonry.api"
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
 
-[tool.poetry]
+[project]
 name = "crud_repository"
-version = "0.1.0"
+version = "0.1.5"
 description = "The CRUDRepository is a Python project designed to provide a generic implementation of Create, Read, Update, and Delete (CRUD) operations for various databases."
-authors = ["Dellius Alexander <info@hyfisolutions.com>"]
-license = "MIT"
-readme = "README.md"
-homepage = "https://github.com/dellius-alexander/CRUDRepository.git"
-repository = "https://github.com/dellius-alexander/CRUDRepository.git"
+authors = [
+  {name = "Dellius Alexander", email = "dalexander@hyfisolutions.com"},
+  {email = "info@hyfisolutions.com"},
+]
+maintainers = [
+  {name = "Dellius Alexander", email = "dalexander@hyfisolutions.com"}
+]
+readme = {file = "PYPI.md", content-type = "text/markdown"}
 keywords = ["crud-repository", "database", "model", "abstraction"]
 classifiers = [
     "Development Status :: 3 - Alpha",
@@ -22,32 +25,22 @@ classifiers = [
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
 ]
-packages = [
-     { include = "src/*" },
-]
+
+license = {file = "LICENSE", content-type = "text/plain"}
+
 
 # Update the 'include' directive to include the "src" directory
-include = ["src/*", "pyproject.toml", "README.md", "LICENSE"]
-exclude = ["tests/*", "docs/*", "examples/*", "notebooks/*", "data/*", "dist/*", "build/*", "**/__pycache__", "src/**/logs/*", "src/resources/*", "src/utils/*"]
 
-[tool.poetry.dependencies]
-python = "^3.8"
-sqlalchemy = "^2.0.29"
-psycopg2-binary = "^2.9.9"
-python-dotenv = "^1.0.1"
-colorlog = "^6.4.1"
-cryptography = "^42.0.5"
-pymysql = "^1.1.0"
-SQLAlchemy-Utils = "^0.41.2"
+dependencies = [
+    "sqlalchemy>=2.0.29",
+    "psycopg2-binary>=2.9.9",
+    "python-dotenv>=1.0.1",
+    "colorlog>=6.4.1",
+    "cryptography>=42.0.5",
+    "pymysql>=1.1.0",
+    "SQLAlchemy-Utils>=0.41.2"
+]
 
+[project.urls]
+Homepage = "https://github.com/dellius-alexander/CRUDRepository.git"
 
-[tool.poetry.dev-dependencies]
-# Update the dev-dependencies as needed, you can remove any that are not required.
-# Keep the ones you actually use in your development process.
-astroid = "^3.1.0"
-isort = "^5.13.2"
-black = "^24.3.0"
-#build = "^1.1.1"
-pytest = "^7.1.3"
-coverage = "^6.4.2"
-mypy = "^0.991"
