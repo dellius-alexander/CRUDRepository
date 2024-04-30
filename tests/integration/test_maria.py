@@ -13,7 +13,7 @@ from src.my_logger.logger import CustomLogger
 log = CustomLogger(__name__).get_logger("DEBUG")
 
 
-class TestMariaDB(unittest.TestCase):
+class TestMariaDBIntegration(unittest.TestCase):
     db_url = f'mariadb+pymysql://{os.getenv("MARIADB_USER")}:{os.getenv("MARIADB_PASSWORD")}' \
                 f'@{os.getenv("MARIADB_HOST")}:{os.getenv("MARIADB_PORT")}/{os.getenv("MARIADB_DATABASE")}'
     db_config = {

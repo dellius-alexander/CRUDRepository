@@ -13,7 +13,7 @@ from src.my_logger.logger import CustomLogger
 log = CustomLogger(__name__).get_logger("DEBUG")
 
 
-class TestPostgresImplementation(unittest.TestCase):
+class TestPostgresDBIntegration(unittest.TestCase):
     db_url = (f'postgresql+psycopg2://{os.getenv("POSTGRES_USER")}:{os.getenv("POSTGRES_PASSWORD")}'
               f'@{os.getenv("POSTGRES_HOST")}:{os.getenv("POSTGRES_HOST")}/{os.getenv("POSTGRES_DB")}')
     db_config = {

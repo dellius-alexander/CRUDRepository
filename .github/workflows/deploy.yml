@@ -99,11 +99,10 @@ jobs:
           POSTGRES_HOST=$POSTGRES_HOST
           # ##########################################################
           """ > .env
-          cat .env
           docker-compose -p crudrepository up \
           --always-recreate-deps --renew-anon-volumes \
           --remove-orphans --force-recreate -d --build
-          sleep 60
+          sleep 30
       # Task for installing dependencies
       - name: Install dependencies
         run: |

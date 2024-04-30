@@ -13,7 +13,7 @@ from tests.user import User
 log = CustomLogger(__name__).get_logger("DEBUG")
 
 
-class TestMySQLDatabase(unittest.TestCase):
+class TestMySQLDBIntegration(unittest.TestCase):
     db_url = (f'mysql+pymysql://'
               f'{os.getenv("MYSQL_USER")}:{os.getenv("MYSQL_PASSWORD")}@'
               f'{os.getenv("MYSQL_HOST")}:{os.getenv("MYSQL_PORT")}/{os.getenv("MYSQL_DATABASE")}')

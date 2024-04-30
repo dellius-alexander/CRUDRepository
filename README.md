@@ -9,9 +9,10 @@
 
 The CRUDRepository is a Python project designed to provide a 
 generic implementation of Create, Read, Update, and Delete (CRUD) 
-operations for various databases. It uses the concept of repositories 
+operations for various databases. It uses the Repository design pattern 
 to abstract the data access layer, allowing for easy switching between 
-different databases.  
+different databases using the Factory pattern in which each database 
+object implements a Singleton object.  
 
 The project includes classes for handling different types of databases 
 such as PostgreSQL, MySQL, and MariaDB. Each of these classes implements 

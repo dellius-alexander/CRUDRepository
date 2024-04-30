@@ -21,15 +21,13 @@ for filename in [".env"]:
     )
 
 # --------------------------------------------------------------
-# Load environment variables
-# This is your Project Root
-ROOT_DIR = os.path.dirname(os.path.abspath(__file__))  # ~/.../CRUDRepository/src
+# Load and setup environment variables
+ROOT_DIR = os.path.dirname(os.path.abspath(__file__))  # ~/CRUDRepository/src
 # --------------------------------------------------------------
-# This is your DATA Directory
-DATA_DIR = os.path.join(ROOT_DIR, "data")  # ~/.../CRUDRepository/src/data
+DATA_DIR = os.path.join(ROOT_DIR, "data")  # ~/CRUDRepository/src/data
 LOG_LEVEL = os.getenv("LOG_LEVEL", "DEBUG")
 LOG_FILE = f'{ROOT_DIR}/logs/crud_{time.strftime("%Y%m%d%H%M%S")}.log'
-LOG_DIR = os.path.join(ROOT_DIR, "logs")  # ~/.../CRUDRepository/src/logs
+LOG_DIR = os.path.join(ROOT_DIR, "logs")  # ~/CRUDRepository/src/logs
 # --------------------------------------------------------------
 # Set environment variables
 os.environ.setdefault("ROOT_DIR", ROOT_DIR)

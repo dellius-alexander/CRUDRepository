@@ -36,9 +36,3 @@ class User(Base):
             f"User(id={self.id!r}, username={self.username!r}, password={self.password!r})"
         )
 
-
-if __name__ == "__main__":
-    user = User(username="admin", password="admin")
-    log.debug(user)
-    log.debug(user.to_dict())
-    log.debug(user.as_dict())
