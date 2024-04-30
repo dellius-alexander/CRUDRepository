@@ -27,7 +27,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          python -m pip install black pytest wheel setuptools build twine poetry
+          python -m pip install black pytest wheel setuptools build twine
           if [ -f requirements.txt ]; then pip install  -r requirements.txt ; fi 
 
   setup-docker-compose:
@@ -103,6 +103,7 @@ jobs:
       # Task for linting with black
       - name: Lint with black
         run: |
+          python -m pip install black pytest wheel setuptools build twine
           # Code formatting with black, check every python file in the src directory 
           black src
           black --check src
@@ -131,7 +132,7 @@ jobs:
       - name: Build package artifact
         run: |
           python -m pip install --upgrade pip
-          python -m pip install black pytest wheel setuptools build twine toml
+          python -m pip install black pytest wheel setuptools build twine
           bash deploy.sh
           # Build the package
           if python3 -m build 2>&1 ; then
