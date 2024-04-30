@@ -171,7 +171,9 @@ jobs:
           TWINE_USERNAME: ${{ secrets.TWINE_USERNAME }}
           TWINE_PASSWORD: ${{ secrets.TWINE_PASSWORD }}
         run: |
-          echo "[pypi]" > ~/.pypirc
-          echo "  username = $TWINE_USERNAME" >> ~/.pypirc
-          echo "  password = $TWINE_PASSWORD" >> ~/.pypirc
+          printf """
+          [pypi]
+          username = $TWINE_USERNAME
+          password = $TWINE_PASSWORD
+          """ > ~/.pypirc
           python3 -m twine upload --skip-existing dist/* &>/dev/null
