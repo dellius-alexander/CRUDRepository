@@ -170,5 +170,5 @@ jobs:
           password = $TWINE_PASSWORD
           """ > ~/.pypirc
           python3 -m twine upload \
-          --config-file .pypirc \
-          dist/* --verbose --skip-existing &>/dev/null
+          --config-file ~/.pypirc \
+          dist/* --verbose --skip-existing 2>&1
