@@ -15,6 +15,7 @@ log = CustomLogger(__name__).get_logger("DEBUG")
 
 
 class PostgreSQLDatabase(IDatabase):
+
     """
     This class provides a PostgreSQL implementation of the Database using sqlalchemy_utils.
     """

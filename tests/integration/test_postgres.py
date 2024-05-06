@@ -4,9 +4,9 @@ import unittest
 import os
 from sqlalchemy import create_engine, text
 
+from src.repo.repository import Repository
 from src.db.factory import DatabaseFactory
 from src.model.base import Base
-from tests.repository import UserRepository
 from tests.user import User
 from src.my_logger.logger import CustomLogger
 
@@ -43,7 +43,7 @@ class TestPostgresDBIntegration(unittest.TestCase):
         # Create a new database session for each test
         self.db = DatabaseFactory.create(self.db_config)
         self.session = self.db.get_session()
-        self.user_repo = UserRepository(self.db)
+        self.user_repo = Repository(self.db, User)
         # Begin a transaction for each test
         self.session.begin_nested()
 

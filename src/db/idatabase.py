@@ -8,21 +8,16 @@ from sqlalchemy import Engine, Connection
 from sqlalchemy.orm import scoped_session
 from src.my_logger.logger import CustomLogger
 
-log = CustomLogger(__name__).get_logger("DEBUG")
-
 
 # ---------------------------------------------------------
 class IDatabase(ABC):
     """
-    This class defines the interface for a database.
+    This class defines the interface for all databases.
 
     Attributes:
         engine (Engine): The SQLAlchemy engine for the database.
         session (Session): The SQLAlchemy session for the database.
     """
-
-    session: scoped_session
-    engine: Engine
 
     @abstractmethod
     def connect(self) -> Connection:

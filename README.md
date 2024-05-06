@@ -105,125 +105,160 @@ classDiagram
 
 ### In this diagram (Class Diagram):
 
-- `Base` is a base class for all models, and `User` is a specific model that extends `Base`.
-- `IDatabase` is an abstract base class that defines the interface for a database. `PostgreSQLDatabase`, `MySQLDatabase`, and `MariaDBDatabase` are concrete implementations of this interface.
-- `DatabaseFactory` is a factory class that creates instances of `PostgreSQLDatabase`, `MySQLDatabase`, or `MariaDBDatabase` based on the provided configuration.
-- `IRepository ~T~` is an abstract base class that defines the interface for a repository, and `Repository ~Base~` is a generic implementation of this interface that is bound to the `Base` model class.
-- `UserRepository` is a specific repository that manages `User` instances.
-- `PostgreSQLDatabase`, `MySQLDatabase`, and `MariaDBDatabase` are used by `Repository ~Base~`, and `UserRepository` manages `User` instances.
+* `Base` is a base class for all models, and `User` is a specific model that extends `Base`.
+* `IDatabase` is an abstract base class that defines the interface for a database. `PostgreSQLDatabase`, `MySQLDatabase`, and `MariaDBDatabase` are concrete implementations of this interface.
+* `DatabaseFactory` is a factory class that creates instances of `PostgreSQLDatabase`, `MySQLDatabase`, or `MariaDBDatabase` based on the provided configuration.
+* `IRepository ~T~` is an abstract base class that defines the interface for a repository, and `Repository ~Base~` is a generic implementation of this interface that is bound to the `Base` model class.
+* `UserRepository` is a specific repository that manages `User` instances.
+* `PostgreSQLDatabase`, `MySQLDatabase`, and `MariaDBDatabase` are used by `Repository ~Base~`, and `UserRepository` manages `User` instances.
 
 ---
 
-## Sequence Diagram
+## Sequence Diagrams
+
+---
+
+### Create Specific Database Type
 
 ```mermaid
 sequenceDiagram
-    participant Client
-    participant UserRepository
-    participant Repository
+    box Configuration Specific Database Type
+    actor Client
     participant DatabaseFactory
     participant PostgreSQLDatabase
     participant MySQLDatabase
     participant MariaDBDatabase
-    participant Session
-    participant User
-    Client->>UserRepository: performOperation(user, operation)
-    alt operation == 'create'
-        UserRepository->>Repository: create(user)
-        Repository->>DatabaseFactory: create(config)
-        alt db_name == 'postgresql'
-            DatabaseFactory-->>PostgreSQLDatabase: create(config)
-            PostgreSQLDatabase-->>Repository: return session
-        else db_name == 'mysql'
-            DatabaseFactory-->>MySQLDatabase: create(config)
-            MySQLDatabase-->>Repository: return session
-        else db_name == 'mariadb'
-            DatabaseFactory-->>MariaDBDatabase: create(config)
-            MariaDBDatabase-->>Repository: return session
-        end
-        Repository->>Session: add(user)
-        Session->>User: add(user)
-        Repository->>Session: commit()
-        Session-->>Repository: commit successful
-        Repository-->>UserRepository: return user
-        UserRepository-->>Client: return user
-    else operation == 'read'
-        UserRepository->>Repository: read(id)
-        Repository->>DatabaseFactory: create(config)
-        alt db_name == 'postgresql'
-            DatabaseFactory-->>PostgreSQLDatabase: create(config)
-            PostgreSQLDatabase-->>Repository: return session
-        else db_name == 'mysql'
-            DatabaseFactory-->>MySQLDatabase: create(config)
-            MySQLDatabase-->>Repository: return session
-        else db_name == 'mariadb'
-            DatabaseFactory-->>MariaDBDatabase: create(config)
-            MariaDBDatabase-->>Repository: return session
-        end
-        Repository->>Session: get(user)
-        Session-->>Repository: return user
-        Repository-->>UserRepository: return user
-        UserRepository-->>Client: return user
-    else operation == 'update'
-        UserRepository->>Repository: update(user)
-        Repository->>DatabaseFactory: create(config)
-        alt db_name == 'postgresql'
-            DatabaseFactory-->>PostgreSQLDatabase: create(config)
-            PostgreSQLDatabase-->>Repository: return session
-        else db_name == 'mysql'
-            DatabaseFactory-->>MySQLDatabase: create(config)
-            MySQLDatabase-->>Repository: return session
-        else db_name == 'mariadb'
-            DatabaseFactory-->>MariaDBDatabase: create(config)
-            MariaDBDatabase-->>Repository: return session
-        end
-        Repository->>Session: update(user)
-        Session->>User: update(user)
-        Repository->>Session: commit()
-        Session-->>Repository: commit successful
-        Repository-->>UserRepository: return user
-        UserRepository-->>Client: return user
-    else operation == 'delete'
-        UserRepository->>Repository: delete(user)
-        Repository->>DatabaseFactory: create(config)
-        alt db_name == 'postgresql'
-            DatabaseFactory-->>PostgreSQLDatabase: create(config)
-            PostgreSQLDatabase-->>Repository: return session
-        else db_name == 'mysql'
-            DatabaseFactory-->>MySQLDatabase: create(config)
-            MySQLDatabase-->>Repository: return session
-        else db_name == 'mariadb'
-            DatabaseFactory-->>MariaDBDatabase: create(config)
-            MariaDBDatabase-->>Repository: return session
-        end
-        Repository->>Session: delete(user)
-        Session->>User: delete(user)
-        Repository->>Session: commit()
-        Session-->>Repository: commit successful
-        Repository-->>UserRepository: return success
-        UserRepository-->>Client: return success
     end
+    
+    Client->>DatabaseFactory: create_database(config): IDatabase
+    alt db_name == 'postgresql'
+        DatabaseFactory-->>PostgreSQLDatabase: create(config): IDatabase
+        PostgreSQLDatabase-->>DatabaseFactory: return PostgreSQLDatabase
+    else db_name == 'mysql'
+        DatabaseFactory-->>MySQLDatabase: create(config): IDatabase
+        MySQLDatabase-->>DatabaseFactory: return MySQLDatabase
+    else db_name == 'mariadb'
+        DatabaseFactory-->>MariaDBDatabase: create(config): IDatabase
+        MariaDBDatabase-->>DatabaseFactory: return MariaDBDatabase
+    end
+    DatabaseFactory-->>Client: return Database
 ```
 
+#### In this diagram (Sequence Diagram):
+
+The diagram illustrates how a client can configure a database connection based on a provided database type. This process highlights the roles of various classes and their collaborative interactions. 
+
+#### Classes:
+
+* **Client**: The actor initiating the database configuration process.
+* **DatabaseFactory**: A factory class responsible for creating specific database instances.
+* **PostgreSQLDatabase**, MySQLDatabase, MariaDBDatabase: Concrete database classes representing the different database types.
+* **IDatabase**: An interface defining the contract for database interactions.
+
+#### Interactions:
+
+* The `Client` sends a create_database request, including configuration details, to the `DatabaseFactory`.
+* The `DatabaseFactory` determines the appropriate database type (postgresql, mysql, or mariadb).
+* Based on the type, the `DatabaseFactory` creates an instance of the corresponding database class.
+* The created database object (implementing the `IDatabase` interface) is returned to the `Client`.
+
+---
+
+### Create Model Specific Repository
+
+```mermaid
+sequenceDiagram
+    box Create Model Specific Repository
+    actor Client
+    participant UserRepository
+    participant Repository
+    participant User
+    end
+    
+Client->>UserRepository: createUserRepository(database: IDatabase, user: User): return new Repository(database, user)
+UserRepository-->>Client: return UserRepository
+```
+
+#### In this diagram (Sequence Diagram):
+
+The diagram demonstrates how to create a specialized repository for a User model, facilitating data access for the  Client.
+
+#### Classes:
+
+* `Client`:  The actor requesting the creation of the User repository.
+* `UserRepository`: A specialized repository class responsible for managing User data.
+* `Repository`: A generic repository class providing basic data access operations.
+* `User`: The data model representing a user entity.
+* `IDatabase`:  An interface defining common database interactions.
+
+#### Interactions:
+
+* The `Client` calls the createUserRepository method on the UserRepository, providing an IDatabase instance (from Diagram 1) and a User object.
+* The UserRepository creates a new Repository instance, configured to work with the User model and the provided database.
+* The UserRepository returns the newly created Repository to the Client.
+
+---
+
+### Perform CRUD Operation on User model
+
+```mermaid
+sequenceDiagram
+    box Perform CRUD Operation
+    participant Client
+    participant UserRepository
+    participant Repository
+    participant User
+    end
+    Client->>UserRepository: performOperation(operation: string, user_repo: UserRepository)
+    alt operation == 'create'
+            UserRepository->>Repository: create(user: User): User
+            Repository->>User: create(user: User): User
+            User->>Repository: return {status: Success/Error, object: User}
+            Repository-->>UserRepository: return {status: Success/Error, object: User}
+    else    operation == 'read'
+            UserRepository->>Repository: read(id: int): User
+            Repository->>User: read(User, id): User
+            User-->>Repository: return User / None
+            Repository-->>UserRepository: return User / None
+    else    operation == 'update'
+            UserRepository->>Repository: update(user: User): User
+            Repository->>User: update(user: User): User
+            User->>Repository: return {status: Success/Error, object: User}
+            Repository-->>UserRepository: return {status: Success/Error, object: User}
+    else    operation == 'delete'
+            UserRepository->>Repository: delete(user: User): Success/Error
+            Repository->>User: delete(user: User): Success/Error
+            User->>Repository: return Success/Error
+            Repository-->>UserRepository: return Success/Error
+    end
+    UserRepository-->>Client: return Success/Error
+```
 
 ### In this diagram (Sequence Diagram):
 
+This diagram depicts how a client performs CRUD (Create, Read, Update, Delete) operations on the User model through the `UserRepository`.
 
-- `Client` represents the client code that interacts with the `UserRepository`.
-- `UserRepository` is a specific repository that manages `User` instances.
-- `Repository` is a generic implementation of a repository.
-- `DatabaseFactory` is a factory class that creates instances of `PostgreSQLDatabase`, `MySQLDatabase`, or `MariaDBDatabase` based on the provided configuration.
-- `PostgreSQLDatabase`, `MySQLDatabase`, and `MariaDBDatabase` are concrete implementations of a IDatabase interface.
-- `Session` represents a database session.
-- `User` represents a user instance.
+* `Client`: Triggers CRUD operations by calling performOperation on the UserRepository.
+* `UserRepository`: Delegates the operation to the underlying Repository, providing context (User model information).
+* `Repository`:  Interacts directly with the IDatabase instance to execute the database operations.
+* `User`: Represents the abstraction for database interaction.
 
-The sequence diagram shows the process of performing a CRUD operation on a user. The client 
-calls the `performOperation` method on the `UserRepository`, which in turn calls the 
-corresponding method (create, read, update, or delete) on the `Repository`. The `Repository` 
-gets a session from the `DatabaseFactory` which creates an instance of either `PostgreSQLDatabase`, 
-`MySQLDatabase`, or `MariaDBDatabase` based on the provided configuration. The `Repository` 
-then performs the operation on the user in the session, and commits the session. The result 
-of the operation is then returned to the client.
+#### Interactions:
+
+* The `Client` calls performOperation on the `UserRepository`, specifying the desired operation type (create, read, update, or delete) .
+* The `UserRepository` delegates the execution to the `Repository` instance.
+* The `Repository` interacts with the underlying `Database` implementation to perform the specified database operation.
+* The success or failure result, along with any data, is returned back through the `Repository` and `UserRepository` layers to the `Client`.
+
+#### Key Points:
+
+* `Abstraction`: Interfaces like IDatabase promote flexibility, allowing the system to swap database implementations easily.
+
+* `Separation of Concerns`:  The diagrams demonstrate how responsibilities are divided: 
+  * The client manages user interaction.
+  * Factories handle object creation.
+  * Repositories encapsulate data access logic.
+  * Database classes focus on database-specific interactions.
 
 ---
 
@@ -316,3 +351,65 @@ if __name__ == '__main__':
 ```
 ---
 
+```mermaid
+sequenceDiagram
+  participant Client (TestClient)
+  participant DatabaseFactory
+  participant Database
+  participant Repository (UserRepository)
+  participant SQLAlchemy_ORM_Objects (User)
+
+  note over Client,DatabaseFactory: Configuration specifies database type
+
+  Client->>DatabaseFactory: create(config)
+  DatabaseFactory->>Client: Database Instance (PostgreSQL) 
+
+  Client->>Repository: new UserRepository(database_instance, User)
+  
+  note over Client, Repository: **Test Case Methods**
+
+  Client->>Repository: create(new_user)
+  Repository->>SQLAlchemy_ORM_Objects: Instantiate User Object
+  Repository->>Database: add(new_user)
+  Repository->>Database: commit() 
+  Database-->>Repository: Success/Failure
+  Repository-->>Client: Success/Error
+
+  Client->>Repository: read(user_id)
+  Repository->>Database: get(User, user_id)
+  Database-->>Repository: User Object / None
+  Repository-->>Client: User Object / None
+
+  Client->>Repository: update(updated_user)
+  Repository->>SQLAlchemy_ORM_Objects: Update User Object Attributes
+  Repository->>Database: merge(updated_user)
+  Repository->>Database: commit() 
+  Database-->>Repository: Success/Failure
+  Repository-->>Client: Success/Error
+
+  Client->>Repository: delete(user)
+  Repository->>Database: delete(user)
+  Repository->>Database: commit() 
+  Database-->>Repository: Success/Failure
+  Repository-->>Client: Success/Error
+```
+---
+
+```mermaid
+sequenceDiagram
+  participant Client
+  participant TestClient
+  participant DatabaseFactory
+  participant Database
+  participant UserRepository
+  participant User (SQLAlchemy ORM Object) 
+
+  TestClient->>DatabaseFactory: create(db_config)
+  DatabaseFactory->>Database: create_instance()
+  Database-->>DatabaseFactory: Instance of PostgreSQL, MySQL or MariaDB
+  TestClient->>DatabaseFactory: get_database() 
+  DatabaseFactory-->>TestClient: database
+  TestClient->>UserRepository: new Repository(database, User)
+  UserRepository->>Database: get_session()
+  Database-->>UserRepository: SQLAlchemy Session
+```
