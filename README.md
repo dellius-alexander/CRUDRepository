@@ -152,12 +152,12 @@ The diagram illustrates how a client can configure a database connection based o
 
 * **Client**: The actor initiating the database configuration process.
 * **DatabaseFactory**: A factory class responsible for creating specific database instances.
-* **PostgreSQLDatabase**, MySQLDatabase, MariaDBDatabase: Concrete database classes representing the different database types.
+* **PostgreSQLDatabase, MySQLDatabase, MariaDBDatabase**: Concrete database classes representing the different database types.
 * **IDatabase**: An interface defining the contract for database interactions.
 
 #### Interactions:
 
-* The `Client` sends a create_database request, including configuration details, to the `DatabaseFactory`.
+* The `Client` sends a `create_database` request, including configuration details, to the `DatabaseFactory`.
 * The `DatabaseFactory` determines the appropriate database type (postgresql, mysql, or mariadb).
 * Based on the type, the `DatabaseFactory` creates an instance of the corresponding database class.
 * The created database object (implementing the `IDatabase` interface) is returned to the `Client`.
@@ -170,32 +170,31 @@ The diagram illustrates how a client can configure a database connection based o
 sequenceDiagram
     box Create Model Specific Repository
     actor Client
-    participant UserRepository
     participant Repository
-    participant User
+    participant UserRepository
+    participant User as User Model
     end
     
-Client->>UserRepository: createUserRepository(database: IDatabase, user: User): return new Repository(database, user)
-UserRepository-->>Client: return UserRepository
+  Client->>Repository: createUserRepository(database: IDatabase, user: User): IRepository
+  Repository->>Client: return Repository(database, user) as UserRepository
 ```
 
 #### In this diagram (Sequence Diagram):
 
-The diagram demonstrates how to create a specialized repository for a User model, facilitating data access for the  Client.
+This sequence diagram illustrates the process of creating a repository tailored specifically for managing `User` data. This provides organized data access for the `Client`.
 
 #### Classes:
 
-* `Client`:  The actor requesting the creation of the User repository.
-* `UserRepository`: A specialized repository class responsible for managing User data.
-* `Repository`: A generic repository class providing basic data access operations.
-* `User`: The data model representing a user entity.
-* `IDatabase`:  An interface defining common database interactions.
+* `Client`: Initiates the repository creation process.
+* `User Repository`: A repository designed to handle all data operations related to the `User` model.
+* `Repository`: A base class offering fundamental data access functionality.
+* `User Model`: The model representing a user within the system.
 
 #### Interactions:
 
-* The `Client` calls the createUserRepository method on the UserRepository, providing an IDatabase instance (from Diagram 1) and a User object.
-* The UserRepository creates a new Repository instance, configured to work with the User model and the provided database.
-* The UserRepository returns the newly created Repository to the Client.
+* The `Client` sends the `createUserRepository` request to the `Repository` class, providing a database (`IDatabase`) instance and the `User` model.
+* The `Repository` constructs a repository instance, specifically configured to work with the `User` model and the supplied database.
+* The `Repository` returns the newly formed `User Repository` object back to the `Client`.
 
 ---
 
@@ -207,7 +206,7 @@ sequenceDiagram
     participant Client
     participant UserRepository
     participant Repository
-    participant User
+    participant User as User Model
     end
     Client->>UserRepository: performOperation(operation: string, user_repo: UserRepository)
     alt operation == 'create'
@@ -231,7 +230,7 @@ sequenceDiagram
             User->>Repository: return Success/Error
             Repository-->>UserRepository: return Success/Error
     end
-    UserRepository-->>Client: return Success/Error
+    UserRepository-->>Client: return {status: Success/Error, object: User}
 ```
 
 ### In this diagram (Sequence Diagram):
@@ -241,7 +240,7 @@ This diagram depicts how a client performs CRUD (Create, Read, Update, Delete) o
 * `Client`: Triggers CRUD operations by calling performOperation on the UserRepository.
 * `UserRepository`: Delegates the operation to the underlying Repository, providing context (User model information).
 * `Repository`:  Interacts directly with the IDatabase instance to execute the database operations.
-* `User`: Represents the abstraction for database interaction.
+* `User Model`: Represents the abstraction for database interaction.
 
 #### Interactions:
 
@@ -259,6 +258,68 @@ This diagram depicts how a client performs CRUD (Create, Read, Update, Delete) o
   * Factories handle object creation.
   * Repositories encapsulate data access logic.
   * Database classes focus on database-specific interactions.
+
+---
+
+### Full Sequence Diagram for Database Configuration and CRUD Operations
+
+
+```mermaid
+sequenceDiagram
+  box Full Sequence Diagram for Database Configuration and CRUD Operations
+  actor Client
+  participant DatabaseFactory
+  participant PostgreSQLDatabase
+  participant MySQLDatabase
+  participant MariaDBDatabase
+  participant UserRepository
+  participant Repository 
+  participant User as User Model
+  end
+  
+  note over Client, MariaDBDatabase: Configuration specifies database type
+  note over UserRepository, User: **CRUD Operations**
+
+  Client->>DatabaseFactory: create_database(config): IDatabase
+  alt db_name == 'postgresql'
+    DatabaseFactory->>PostgreSQLDatabase: create(config): IDatabase
+    PostgreSQLDatabase->>DatabaseFactory: return PostgreSQLDatabase
+  else db_name == 'mysql'
+    DatabaseFactory->>MySQLDatabase: create(config): IDatabase
+    MySQLDatabase->>DatabaseFactory: return MySQLDatabase
+  else db_name == 'mariadb'
+    DatabaseFactory->>MariaDBDatabase: create(config): IDatabase
+    MariaDBDatabase->>DatabaseFactory: return MariaDBDatabase
+  end
+  DatabaseFactory->>Client: return database 
+
+  Client->>Repository: createUserRepository(database, user): IRepository
+  Repository->>Client: return Repository(database, user) as UserRepository
+
+  Client->>UserRepository: performOperation(operation: string)
+  alt operation == 'create'
+    UserRepository->>Repository: create(user)
+    Repository->>User: create(user) 
+    User->>Repository: return {status: Success/Error, object: User}
+    Repository->>UserRepository: return {status: Success/Error, object: User}
+  else operation == 'read'
+    UserRepository->>Repository: read(id)
+    Repository->>User: read(id)
+    User->>Repository: return User / None
+    Repository->>UserRepository: return User / None
+  else operation == 'update'
+    UserRepository->>Repository: update(user)
+    Repository->>User: update(user)
+    User->>Repository: return {status: Success/Error, object: User}
+    Repository->>UserRepository: return {status: Success/Error, object: User}
+  else operation == 'delete'
+    UserRepository->>Repository: delete(user)
+    Repository->>User: delete(user)
+    User->>Repository: return Success/Error
+    Repository->>UserRepository: return Success/Error
+  end
+  UserRepository->>Client: return {status: Success/Error, object: User/None}
+```
 
 ---
 

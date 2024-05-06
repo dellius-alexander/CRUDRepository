@@ -42,8 +42,9 @@ class TestPostgresDBIntegration(unittest.TestCase):
         log.debug(f"db_config: {self.db_config}")
         # Create a new database session for each test
         self.db = DatabaseFactory.create(self.db_config)
-        self.session = self.db.get_session()
+        # Create a repository for the User model
         self.user_repo = Repository(self.db, User)
+        self.session = self.db.get_session()
         # Begin a transaction for each test
         self.session.begin_nested()
 
