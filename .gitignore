@@ -17,7 +17,7 @@
 /crud_repository/logs/**
 /tests/logs/**
 # But do not ignore the directory itself
-!/crud_repository/logs/.gitkeep
+!/crud_repository/logs/
 /.devcontainer/certs/
 /build/
 /crud_repository.egg-info/

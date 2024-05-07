@@ -49,23 +49,24 @@ classDiagram
     }
     namespace Databases { 
         class IDatabase {
+            << interface >>
           +connect(): Connection
           +get_session(): scoped_session
         }
         class PostgreSQLDatabase {
-            #session: scoped_session
+            +session: scoped_session
             #engine: Engine
             +connect(): Connection
             +get_session(): scoped_session
         }
         class MySQLDatabase {
-            #session: scoped_session
+            +session: scoped_session
             #engine: Engine
             +connect(): Connection
             +get_session(): scoped_session
         }
         class MariaDBDatabase {
-            #session: scoped_session
+            +session: scoped_session
             #engine: Engine
             +connect(): Connection
             +get_session(): scoped_session
@@ -77,6 +78,7 @@ classDiagram
 
     namespace Repositories { 
         class IRepository ~Base as T~ {
+            << interface >>
           +create(entity: T) : T
           +read(id) : T
           +update(entity: T): T
@@ -212,7 +214,7 @@ This sequence diagram illustrates the process of creating a repository tailored 
 ### Perform CRUD Operation on User model
 
 ```mermaid
-sequenceDiagram
+sequenceDiagram 
     box Perform CRUD Operation
     participant Client
     participant UserRepository
