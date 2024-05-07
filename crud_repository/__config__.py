@@ -11,14 +11,18 @@ from dotenv import load_dotenv, find_dotenv, dotenv_values
 
 # --------------------------------------------------------------
 # Load environment variables from .env file
-for filename in [".env"]:
-    load_dotenv(
-        find_dotenv(
-            filename=filename,
-            raise_error_if_not_found=True,
-            usecwd=True,
+try:
+    for filename in [".env"]:
+        load_dotenv(
+            find_dotenv(
+                filename=filename,
+                raise_error_if_not_found=True,
+                usecwd=True,
+            )
         )
-    )
+except Exception as e:
+    print(f"Error loading environment variables: {e}")
+
 
 # --------------------------------------------------------------
 # Load and setup environment variables
