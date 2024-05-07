@@ -5,7 +5,7 @@ This module provides classes for managing databases.
 """
 from abc import ABC, abstractmethod
 from sqlalchemy import Engine, Connection
-from sqlalchemy.orm import scoped_session
+from sqlalchemy.orm import scoped_session, sessionmaker
 from src.my_logger.logger import CustomLogger
 
 
@@ -18,23 +18,23 @@ class IDatabase(ABC):
         engine (Engine): The SQLAlchemy engine for the database.
         session (Session): The SQLAlchemy session for the database.
     """
+    engine: Engine
+    session: scoped_session
 
-    @abstractmethod
     def connect(self) -> Connection:
         """
-        Connect to the database.
+        Connect to the PostgreSQL database.
+        :return: (Connection) The SQLAlchemy connection for the PostgreSQL database.
         """
-        raise NotImplementedError("Subclasses must implement this method.")
+        return self.engine.connect()
 
-    @abstractmethod
-    def get_session(self) -> scoped_session:
+    def get_scoped_session(self) -> scoped_session:
         """
-        Get a session from the database.
-
-        Returns:
-            Session: The SQLAlchemy session for the database.
+        Get a session from the PostgreSQL database.  .
+        :return: (scoped_session) The SQLAlchemy session for the PostgreSQL database.
         """
-        raise NotImplementedError("Subclasses must implement this method.")
+        _scoped_session = scoped_session(sessionmaker(bind=self.engine))
+        return _scoped_session
 
     def __dict__(self):
         return {"engine": self.engine, "session": self.session}

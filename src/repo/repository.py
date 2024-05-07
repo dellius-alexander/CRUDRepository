@@ -38,7 +38,7 @@ class Repository(IRepository[T]):
         self.model = model
 
     def create(self, entity: T) -> T:
-        session = self.database.get_session()
+        session = self.database.get_scoped_session()
         try:
             session.add(entity)
             session.commit()
@@ -56,7 +56,7 @@ class Repository(IRepository[T]):
             session.close()
 
     def read(self, id) -> T:
-        session = self.database.get_session()
+        session = self.database.get_scoped_session()
         try:
             return session.get(self.model, id)
         except SQLAlchemyError as e:
@@ -66,7 +66,7 @@ class Repository(IRepository[T]):
             session.close()
 
     def update(self, entity: T) -> T:
-        session = self.database.get_session()
+        session = self.database.get_scoped_session()
         try:
             session.merge(entity)
             session.commit()
@@ -84,7 +84,7 @@ class Repository(IRepository[T]):
             session.close()
 
     def delete(self, entity: T) -> None:
-        session = self.database.get_session()
+        session = self.database.get_scoped_session()
         try:
             session.delete(entity)
             session.commit()

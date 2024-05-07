@@ -42,7 +42,7 @@ class TestMySQLDBIntegration(unittest.TestCase):
         log.debug(f"db_config: {self.db_config}")
         # Create a new database session for each test
         self.db = DatabaseFactory.create(self.db_config)
-        self.session = self.db.get_session()
+        self.session = self.db.get_scoped_session()
         self.user_repo = UserRepository(self.db)
         # Begin a transaction for each test
         self.session.begin_nested()
@@ -66,7 +66,7 @@ class TestMySQLDBIntegration(unittest.TestCase):
         connection.close()
 
     def test_database_session(self):
-        self.assertIsNotNone(self.db.get_session())
+        self.assertIsNotNone(self.db.get_scoped_session())
 
     def test_create_user(self):
         new_user = User(username="test_user", password="test_password")

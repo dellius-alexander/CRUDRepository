@@ -54,14 +54,4 @@ class MySQLDatabase(IDatabase):
             traceback.print_exc()
             sys.exit(1)
 
-    def connect(self) -> Connection:
-        """
-        Connect to the MySQL database and return the connection.
-        """
-        return self.engine.connect()
 
-    def get_session(self) -> scoped_session:
-        """
-        Get a session from the MySQL database.
-        """
-        return self.session

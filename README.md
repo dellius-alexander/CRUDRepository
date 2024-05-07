@@ -38,58 +38,70 @@ clear and simple interface for performing CRUD operations.
 
 ```mermaid
 classDiagram
-    class Base {
+    namespace model { 
+        class Base {
+        }
+      class User {
+          +id: int
+          +username: str
+          +password: str
+      }
     }
-    class User {
-        +id: int
-        +username: str
-        +password: str
+    namespace database { 
+        class IDatabase {
+          +connect(): Connection
+          +get_session(): scoped_session
+        }
+        class PostgreSQLDatabase {
+            #session: scoped_session
+            #engine: Engine
+            +connect(): Connection
+            +get_session(): scoped_session
+        }
+        class MySQLDatabase {
+            #session: scoped_session
+            #engine: Engine
+            +connect(): Connection
+            +get_session(): scoped_session
+        }
+        class MariaDBDatabase {
+            #session: scoped_session
+            #engine: Engine
+            +connect(): Connection
+            +get_session(): scoped_session
+        }
+        class DatabaseFactory {
+            +create(config: dict): IDatabase
+        }
     }
-    class IDatabase {
-        +connect(): Connection
-        +get_session(): scoped_session
+
+
+    namespace repository { 
+        class IRepository ~Base as T~ {
+          +create(entity: T) : T
+          +read(id) : T
+          +update(entity: T): T
+          +delete(entity: T): None
+      }
+        class Repository {
+          #database: IDatabase
+          #model: T
+          +create(entity: T) : T
+          +read(id) : T
+          +update(entity: T): T
+          +delete(entity: T): None
+      }
+        class UserRepository {
+            +__init__(database: IDatabase)
+        }
     }
-    class IRepository ~Base as T~ {
-        +create(entity: T) : T
-        +read(id) : T
-        +update(entity: T): T
-        +delete(entity: T): None
-    }
-    class Repository {
-        #database: IDatabase
-        #model: T
-        +create(entity: T) : T
-        +read(id) : T
-        +update(entity: T): T
-        +delete(entity: T): None
-    }
-    class UserRepository {
-        +__init__(database: IDatabase)
-    }
-    class PostgreSQLDatabase {
-        #session: scoped_session
-        #engine: Engine
-        +connect(): Connection
-        +get_session(): scoped_session
-    }
-    class MySQLDatabase {
-        #session: scoped_session
-        #engine: Engine
-        +connect(): Connection
-        +get_session(): scoped_session
-    }
-    class MariaDBDatabase {
-        #session: scoped_session
-        #engine: Engine
-        +connect(): Connection
-        +get_session(): scoped_session
-    }
+
+
+    
     IDatabase <|-- PostgreSQLDatabase: Implements
     IDatabase <|-- MySQLDatabase: Implements
     IDatabase <|-- MariaDBDatabase: Implements
-    class DatabaseFactory {
-        +create(config: dict): IDatabase
-    }
+
     
     IRepository ~Base as T~ <|-- Repository : Implements
     Repository <|-- UserRepository: Implements

@@ -26,9 +26,9 @@ class User(Base):
     username: Mapped[str] = Column(String(128))
     password: Mapped[Optional[str]] = Column(String(128))
     name: Mapped[str] = Column(String(30))
-    fullname: Mapped[Optional[str]]
+    fullname: Mapped[Optional[str]] = Column(String(30))
     emails: Mapped[List["Email"]] = relationship(
-        back_populates="user", cascade="all, delete-orphan"
+        "Email", back_populates="user", cascade="all, delete-orphan"
     )
 
     def to_dict(self) -> dict:
@@ -38,7 +38,7 @@ class User(Base):
             "fullname": self.fullname,
             "username": self.username,
             "password": self.password,
-            "emails": [email.as_dict() for email in self.emails],
+            "emails": [email.as_dict() for email in self.emails] if self.emails is not None else [],
         }
 
     def as_dict(self) -> dict:  # renamed from __dict__ to as_dict
@@ -62,15 +62,17 @@ class Email(Base):
         unique=True,
         index=True,
     )
-    email: Mapped[str]
+    email: Mapped[str] = Column(String(30))
     user_id: Mapped[int] = mapped_column(ForeignKey("user.id"))
-    user: Mapped["User"] = relationship(back_populates="emails")
+    user: Mapped["User"] = relationship(
+        "User", back_populates="emails"
+    )
 
     def to_dict(self) -> dict:
-        return {"id": self.id, "email_address": self.email_address}
+        return {"id": self.id, "email": self.email}
 
     def as_dict(self) -> dict:  # renamed from __dict__ to as_dict
         return self.to_dict()
 
     def __repr__(self) -> str:
-        return f"Email(id={self.id!r}, email_address={self.email_address!r})"
+        return f"Email(id={self.id!r}, email_address={self.email!r})"

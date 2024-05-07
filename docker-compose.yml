@@ -23,24 +23,24 @@ services:
         POSTGRES_DB: ${POSTGRES_DB}
         POSTGRES_USER: ${POSTGRES_USER}
         POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-        POSTGRES_SSLMODE: require
-        POSTGRES_SSLROOTCERT: /etc/ssl/certs/server.crt
-        POSTGRES_SSLKEY: /etc/ssl/certs/server.key
+#        POSTGRES_SSLMODE: require
+#        POSTGRES_SSLROOTCERT: /etc/ssl/certs/server.crt
+#        POSTGRES_SSLKEY: /etc/ssl/certs/server.key
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      - ssl_certs:/etc/ssl/certs # Mount certificates
+#      - ssl_certs:/etc/ssl/certs # Mount certificates
     ports:
       - "5432:5432"
     networks:
       - crud_network
-    command:
-      - "postgres"
-      - "-c"
-      - "ssl=on"
-      - "-c"
-      - "ssl_cert_file=/etc/ssl/certs/server.crt"
-      - "-c"
-      - "ssl_key_file=/etc/ssl/certs/server.key"
+#    command:
+#      - "postgres"
+#      - "-c"
+#      - "ssl=on"
+#      - "-c"
+#      - "ssl_cert_file=/etc/ssl/certs/server.crt"
+#      - "-c"
+#      - "ssl_key_file=/etc/ssl/certs/server.key"
 
   mysql:
 #    image: mysql:8.0

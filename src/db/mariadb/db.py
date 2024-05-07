@@ -62,14 +62,3 @@ class MariaDBDatabase(IDatabase):
             traceback.print_exc()
             sys.exit(1)
 
-    def connect(self) -> Connection:
-        """
-        Connect to the MariaDB database and return the connection.
-        """
-        return self.engine.connect()
-
-    def get_session(self) -> scoped_session:
-        """
-        Get a session from the MariaDB database.
-        """
-        return self.session

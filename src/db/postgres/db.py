@@ -39,16 +39,4 @@ class PostgreSQLDatabase(IDatabase):
         self.session = scoped_session(sessionmaker(bind=self.engine))
         Base.metadata.create_all(self.engine)
 
-    def connect(self) -> Connection:
-        """
-        Connect to the PostgreSQL database.
-        :return: (Connection) The SQLAlchemy connection for the PostgreSQL database.
-        """
-        return self.engine.connect()
 
-    def get_session(self) -> scoped_session:
-        """
-        Get a session from the PostgreSQL database.  .
-        :return: (scoped_session) The SQLAlchemy session for the PostgreSQL database.
-        """
-        return self.session

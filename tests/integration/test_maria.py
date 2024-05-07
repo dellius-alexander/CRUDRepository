@@ -43,7 +43,7 @@ class TestMariaDBIntegration(unittest.TestCase):
         log.debug(f"db_config: {self.db_config}")
         # Create a new database session for each test
         self.db = DatabaseFactory.create(self.db_config)
-        self.session = self.db.get_session()
+        self.session = self.db.get_scoped_session()
         self.user_repo = Repository(self.db, User)
         # Begin a transaction for each test
         self.session.begin_nested()
@@ -71,8 +71,8 @@ class TestMariaDBIntegration(unittest.TestCase):
         log.debug(f"Connection: {connection.__dict__}")
 
     def test_get_session(self):
-        # Test the get_session method
-        session = self.db.get_session()
+        # Test the get_scoped_session method
+        session = self.db.get_scoped_session()
         self.assertIsNotNone(session)
         log.debug(f"Session: {session}")
 
