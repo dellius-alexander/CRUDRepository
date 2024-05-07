@@ -22,12 +22,12 @@ for filename in [".env"]:
 
 # --------------------------------------------------------------
 # Load and setup environment variables
-ROOT_DIR = os.path.dirname(os.path.abspath(__file__))  # ~/CRUDRepository/src
+ROOT_DIR = os.path.dirname(os.path.abspath(__file__))  # ~/CRUDRepository/crud_repository
 # --------------------------------------------------------------
-DATA_DIR = os.path.join(ROOT_DIR, "data")  # ~/CRUDRepository/src/data
+DATA_DIR = os.path.join(ROOT_DIR, "data")  # ~/CRUDRepository/crud_repository/data
 LOG_LEVEL = os.getenv("LOG_LEVEL", "DEBUG")
 LOG_FILE = f'{ROOT_DIR}/logs/crud_{time.strftime("%Y%m%d%H%M%S")}.log'
-LOG_DIR = os.path.join(ROOT_DIR, "logs")  # ~/CRUDRepository/src/logs
+LOG_DIR = os.path.join(ROOT_DIR, "logs")  # ~/CRUDRepository/crud_repository/logs
 # --------------------------------------------------------------
 # Set environment variables
 os.environ.setdefault("ROOT_DIR", ROOT_DIR)
@@ -71,7 +71,7 @@ log_config = {
             "formatter": "colored",
         },
         "file_handler": {
-            "class": "src.my_logger.handlers.CustomTimedRotatingFileHandler",
+            "class": "crud_repository.my_logger.handlers.CustomTimedRotatingFileHandler",
             "filename": f"{LOG_FILE}",
             "when": "midnight",
             "interval": 1,

@@ -2,7 +2,7 @@
 This module contains the CommandLogger class which is used for logging command events.
 """
 
-from src.my_logger.logger import CustomLogger
+from crud_repository.my_logger.logger import CustomLogger
 
 log = CustomLogger(__name__).get_logger("DEBUG")
 

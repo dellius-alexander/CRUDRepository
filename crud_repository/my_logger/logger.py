@@ -6,7 +6,7 @@ import logging
 import logging.config
 import sys
 
-from src.__config__ import log_config
+from crud_repository.__config__ import log_config
 
 
 # ---------------------------------------------------------

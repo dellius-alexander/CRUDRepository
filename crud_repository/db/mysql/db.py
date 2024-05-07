@@ -12,9 +12,9 @@ from sqlalchemy.orm import scoped_session
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy_utils import database_exists, create_database
 
-from src.db.idatabase import IDatabase
-from src.model.base import Base
-from src.my_logger.logger import CustomLogger
+from crud_repository.db.idatabase import IDatabase
+from crud_repository.model.base import Base
+from crud_repository.my_logger.logger import CustomLogger
 
 log = CustomLogger(__name__).get_logger("DEBUG")
 

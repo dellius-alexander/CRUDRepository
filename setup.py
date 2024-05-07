@@ -16,7 +16,7 @@ setup(
     ),
     long_description=Path("README.md").read_text(encoding="utf-8"),
     package_dir={
-        "crud_repository": "src"
+        "crud_repository": "crud_repository"
     },
 )
 

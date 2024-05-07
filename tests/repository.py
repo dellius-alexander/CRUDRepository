@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-from src.db.idatabase import IDatabase
+from crud_repository.db.idatabase import IDatabase
 from tests.models import User
-from src.repo.repository import Repository
+from crud_repository.repo.repository import Repository
 
 
 # ---------------------------------------------------------

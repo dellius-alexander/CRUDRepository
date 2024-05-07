@@ -47,13 +47,13 @@ pip install crud-repository
 ```python
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-from src.db.factory import DatabaseFactory
+from crud_repository.db.factory import DatabaseFactory
 from typing import Optional
 from sqlalchemy import Column, Sequence, Integer, String
 from sqlalchemy.orm import Mapped
-from src.model.base import Base
+from crud_repository.model.base import Base
 from db.idatabase import IDatabase
-from src.repo.repository import Repository
+from crud_repository.repo.repository import Repository
 
 
 # ---------------------------------------------------------

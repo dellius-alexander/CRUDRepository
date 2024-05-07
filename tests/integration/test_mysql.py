@@ -4,9 +4,9 @@ import unittest
 import os
 from sqlalchemy import create_engine, text
 
-from src.db.factory import DatabaseFactory
-from src.model.base import Base
-from src.my_logger.logger import CustomLogger
+from crud_repository.db.factory import DatabaseFactory
+from crud_repository.model.base import Base
+from crud_repository.my_logger.logger import CustomLogger
 from tests.repository import UserRepository
 from tests.models import User
 

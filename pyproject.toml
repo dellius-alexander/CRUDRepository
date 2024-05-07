@@ -29,7 +29,7 @@ classifiers = [
 license = {file = "LICENSE", content-type = "text/plain"}
 
 
-# Update the 'include' directive to include the "src" directory
+# Update the 'include' directive to include the "crud_repository" directory
 
 dependencies = [
     "sqlalchemy>=2.0.29",

@@ -2,10 +2,10 @@
 # -*- coding: utf-8 -*-
 from typing import List, Optional
 from sqlalchemy import Column, Sequence, Integer, String, ForeignKey
-from src.model.base import Base
+from crud_repository.model.base import Base
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from src.my_logger.logger import CustomLogger
+from crud_repository.my_logger.logger import CustomLogger
 
 log = CustomLogger(__name__).get_logger("DEBUG")
 

@@ -4,9 +4,9 @@ from abc import ABC, abstractmethod
 from typing import Generic, TypeVar
 import sqlalchemy
 from sqlalchemy.exc import SQLAlchemyError
-from src.db.idatabase import IDatabase
-from src.model.base import Base
-from src.my_logger.logger import CustomLogger
+from crud_repository.db.idatabase import IDatabase
+from crud_repository.model.base import Base
+from crud_repository.my_logger.logger import CustomLogger
 
 log = CustomLogger(__name__).get_logger("DEBUG")
 T = TypeVar("T", bound=Base)

@@ -6,7 +6,7 @@ This module provides classes for managing databases.
 from abc import ABC, abstractmethod
 from sqlalchemy import Engine, Connection
 from sqlalchemy.orm import scoped_session, sessionmaker
-from src.my_logger.logger import CustomLogger
+from crud_repository.my_logger.logger import CustomLogger
 
 
 # ---------------------------------------------------------

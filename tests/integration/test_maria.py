@@ -4,11 +4,11 @@ import os
 import unittest
 from sqlalchemy import create_engine, text
 
-from src.repo.repository import Repository
-from src.db.factory import DatabaseFactory
-from src.model.base import Base
+from crud_repository.repo.repository import Repository
+from crud_repository.db.factory import DatabaseFactory
+from crud_repository.model.base import Base
 from tests.models import User
-from src.my_logger.logger import CustomLogger
+from crud_repository.my_logger.logger import CustomLogger
 
 log = CustomLogger(__name__).get_logger("DEBUG")
 

@@ -3,11 +3,11 @@
 """
 This module provides classes for managing databases.
 """
-from src.db.idatabase import IDatabase
-from src.db.mariadb.db import MariaDBDatabase
-from src.db.mysql.db import MySQLDatabase
-from src.db.postgres.db import PostgreSQLDatabase
-from src.my_logger.logger import CustomLogger
+from crud_repository.db.idatabase import IDatabase
+from crud_repository.db.mariadb.db import MariaDBDatabase
+from crud_repository.db.mysql.db import MySQLDatabase
+from crud_repository.db.postgres.db import PostgreSQLDatabase
+from crud_repository.my_logger.logger import CustomLogger
 
 log = CustomLogger(__name__).get_logger("DEBUG")
 

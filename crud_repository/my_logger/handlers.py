@@ -10,7 +10,7 @@ import time
 from logging import StreamHandler, DEBUG, Formatter
 from typing import Optional
 
-from src.my_logger.formatters import CustomFormatter
+from crud_repository.my_logger.formatters import CustomFormatter
 
 
 # ------------------------------------------------------------------------
