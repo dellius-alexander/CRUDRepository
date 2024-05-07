@@ -109,9 +109,9 @@ jobs:
       - name: Lint with black
         run: |
           python -m pip install black pytest wheel setuptools build twine
-          # Code formatting with black, check every python file in the src directory 
-          black src
-          black --check src
+          # Code formatting with black, check every python file in the crud_repository directory 
+          black crud_repository
+          black --check crud_repository
 
       # Task for running tests
       - name: Testing with pytest
