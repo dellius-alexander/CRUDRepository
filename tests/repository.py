@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 from src.db.idatabase import IDatabase
-from tests.user import User
+from tests.models import User
 from src.repo.repository import Repository
 
 

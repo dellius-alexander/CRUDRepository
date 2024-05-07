@@ -8,7 +8,7 @@ from src.db.factory import DatabaseFactory
 from src.model.base import Base
 from src.my_logger.logger import CustomLogger
 from tests.repository import UserRepository
-from tests.user import User
+from tests.models import User
 
 log = CustomLogger(__name__).get_logger("DEBUG")
 

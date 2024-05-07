@@ -7,7 +7,7 @@ from sqlalchemy import create_engine, text
 from src.repo.repository import Repository
 from src.db.factory import DatabaseFactory
 from src.model.base import Base
-from tests.user import User
+from tests.models import User
 from src.my_logger.logger import CustomLogger
 
 log = CustomLogger(__name__).get_logger("DEBUG")

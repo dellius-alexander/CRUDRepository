@@ -11,6 +11,11 @@ on:
   pull_request:
     branches:
       - main
+  release:
+    types: [ published ]
+    branches:
+      - main
+
 jobs:
   setup:
     runs-on: ubuntu-latest

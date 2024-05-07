@@ -15,7 +15,7 @@
 /.k8s
 # Ignore all files in the src/logs directory
 /src/logs/**
-
+/tests/logs/**
 # But do not ignore the directory itself
 !/src/logs/.gitkeep
 /.devcontainer/certs/
@@ -27,3 +27,7 @@
 /poetry.lock
 /poetry.toml
 /.devcontainer/nginx-proxy/
+
+/AI-RESPONSE.md
+/tests/test_model_a.py
+/tests/test_model_b.py
