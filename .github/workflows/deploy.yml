@@ -90,9 +90,12 @@ jobs:
           # ##########################################################
           """ > .env
           docker-compose -p crudrepository up \
-          --always-recreate-deps --renew-anon-volumes \
-          --remove-orphans --force-recreate -d --build
-          bash deploy.sh -uv --install-dev
+          --always-recreate-deps \
+          --renew-anon-volumes \
+          --remove-orphans \
+          --force-recreate \
+          -d --build &&
+          bash deploy.sh -uv --install-dev &&
           docker ps -a
 
       # Task for linting with black
