@@ -153,7 +153,7 @@ jobs:
             LICENSE
 
   publish:
-    needs: build, setup-and-test
+    needs: setup-and-test
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/release'
     # only run if job setup and test passed
