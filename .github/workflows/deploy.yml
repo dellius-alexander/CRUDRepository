@@ -21,7 +21,7 @@ on:
       - main
 
 jobs:
-  'setup and test':
+  setup-and-test:
     runs-on: ubuntu-latest
     strategy:
       matrix:
