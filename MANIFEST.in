@@ -1,4 +1,7 @@
-include src/**
+recursive-include dir-pattern crud_repository/**/*.py
+recursive-exclude dir-pattern crud_repository/logs/*
+recursive-exclude dir-pattern crud_repository/resources/*
+recursive-exclude dir-pattern crud_repository/utils/*
 global-exclude tests/*
 global-exclude docs/*
 global-exclude examples/*
@@ -6,7 +9,7 @@ global-exclude notebooks/*
 global-exclude data/*
 global-exclude dist/*
 global-exclude build/*
-global-exclude **/__pycache__
-global-exclude src/logs/*
-global-exclude src/resources/*
-global-exclude src/utils/*
+recursive-exclude dir-pattern /**/__pycache__
+recursive-exclude dir-pattern /**/*.pyc
+recursive-exclude dir-pattern /**/*.pyo
+recursive-exclude dir-pattern /**/DS_Store
