@@ -174,21 +174,21 @@ jobs:
     strategy:
       matrix:
         python-version: ["3.8", "3.9",  "3.10" ]
-      steps:
-      - name: Checkout
-        uses: actions/checkout@v2
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
 
-      - name: Publish to PyPI
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          TWINE_USERNAME: ${{ secrets.TWINE_USERNAME }}
-          TWINE_PASSWORD: ${{ secrets.TWINE_PASSWORD }}
-        run: |
-          printf """\n
-          [pypi]
-          username = $TWINE_USERNAME
-          password = $TWINE_PASSWORD
-          """ > ~/.pypirc
-          python3 -m twine upload \
-          --config-file ~/.pypirc \
-          dist/* --verbose --skip-existing &>/dev/null
+    - name: Publish to PyPI
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        TWINE_USERNAME: ${{ secrets.TWINE_USERNAME }}
+        TWINE_PASSWORD: ${{ secrets.TWINE_PASSWORD }}
+      run: |
+        printf """\n
+        [pypi]
+        username = $TWINE_USERNAME
+        password = $TWINE_PASSWORD
+        """ > ~/.pypirc
+        python3 -m twine upload \
+        --config-file ~/.pypirc \
+        dist/* --verbose --skip-existing &>/dev/null
