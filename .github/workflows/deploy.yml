@@ -184,6 +184,7 @@ jobs:
         TWINE_USERNAME: ${{ secrets.TWINE_USERNAME }}
         TWINE_PASSWORD: ${{ secrets.TWINE_PASSWORD }}
       run: |
+        bash deploy.sh
         printf """\n
         [pypi]
         username = $TWINE_USERNAME
