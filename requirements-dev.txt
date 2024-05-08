@@ -5,3 +5,4 @@ click==8.1.7
 setuptools>=61.0
 pytest>=8.2.0
 twine==5.0.0
+pip>=23.2.1

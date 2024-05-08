@@ -106,7 +106,7 @@ jobs:
       # Task for running tests
       - name: Testing with pytest
         run: |
-          bash deploy.sh --install-dev --test
+          bash deploy.sh --test
 
   build:
     needs: setup-and-test
