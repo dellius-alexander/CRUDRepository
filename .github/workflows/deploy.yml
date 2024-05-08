@@ -168,7 +168,7 @@ jobs:
             LICENSE
 
   publish:
-    needs: build
+    needs: test
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main' || github.event_name == 'release'
     strategy:
