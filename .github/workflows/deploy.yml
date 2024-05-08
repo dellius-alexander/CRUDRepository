@@ -167,31 +167,31 @@ jobs:
             README.md
             LICENSE
 
-publish:
-  needs: build
-  runs-on: ubuntu-latest
-  if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/release'
-  strategy:
-    matrix:
-      python-version: ["3.8", "3.9",  "3.10" ]
-  steps:
-    - name: Download build artifact
-      uses: actions/download-artifact@v2
-      with:
-        name: Build-Results
-        path: dist
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/release'
+    strategy:
+      matrix:
+        python-version: ["3.8", "3.9",  "3.10" ]
+    steps:
+      - name: Download build artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: Build-Results
+          path: dist
 
-    - name: Publish to PyPI
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        TWINE_USERNAME: ${{ secrets.TWINE_USERNAME }}
-        TWINE_PASSWORD: ${{ secrets.TWINE_PASSWORD }}
-      run: |
-        printf """\n
-        [pypi]
-        username = $TWINE_USERNAME
-        password = $TWINE_PASSWORD
-        """ > ~/.pypirc
-        python3 -m twine upload \
-        --config-file ~/.pypirc \
-        dist/* --verbose --skip-existing &>/dev/null
+      - name: Publish to PyPI
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TWINE_USERNAME: ${{ secrets.TWINE_USERNAME }}
+          TWINE_PASSWORD: ${{ secrets.TWINE_PASSWORD }}
+        run: |
+          printf """\n
+          [pypi]
+          username = $TWINE_USERNAME
+          password = $TWINE_PASSWORD
+          """ > ~/.pypirc
+          python3 -m twine upload \
+          --config-file ~/.pypirc \
+          dist/* --verbose --skip-existing &>/dev/null
