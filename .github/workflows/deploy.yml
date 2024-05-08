@@ -92,13 +92,12 @@ jobs:
           docker-compose -p crudrepository up \
           --always-recreate-deps --renew-anon-volumes \
           --remove-orphans --force-recreate -d --build
-          sleep 45
+          bash deploy.sh -uv --install-dev
           docker ps -a
 
       # Task for linting with black
       - name: Lint with black
         run: |
-          bash deploy.sh --install-dev
           # Code formatting with black, check every python file in the crud_repository directory 
           black crud_repository
           black --check crud_repository

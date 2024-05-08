@@ -6,7 +6,7 @@ __print_help() {
 Usage: $0 [-h|--help] [-u|--update-version] [-i|--install [--dev]] [-t|--test] [-b|--build] [-p|--upload]
 
 -h, --help:         Display this help message and exit.
--u, --update-version:  Update the package version in pyproject.toml.
+-uv, --update-version:  Update the package version in pyproject.toml.
 -i, --install:       Install dependencies from requirements.txt.
 --install-dev:      Install development dependencies from requirements-dev.txt.
 -t, --test:         Run tests for the current package.
@@ -25,12 +25,6 @@ __install_dependencies() {
         echo "Installing development dependencies..."
     else
         requirements_file="requirements.txt"
-    fi
-    if python3 -m pip install --upgrade setuptools wheel twine 2>&1 ; then
-        echo "Successfully installed setuptools and wheel"
-    else
-        echo "Failed to install setuptools and wheel"
-        exit 1
     fi
 
     if python3 -m pip install -r "$requirements_file" 2>&1 ; then
@@ -94,7 +88,7 @@ main() {
             __print_help
             exit 0
             ;;
-        -u|--update-version)
+        -uv|--update-version)
             __update_version
             shift
             ;;
