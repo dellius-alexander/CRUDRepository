@@ -3,7 +3,7 @@
 """
 This module provides classes for managing databases.
 """
-from typing import Dict
+from typing import Dict, Type
 
 from crud_repository.db.idatabase import IDatabase
 from crud_repository.db.mariadb.db import MariaDBDatabase
@@ -22,7 +22,7 @@ class DatabaseFactory:
     _instances: Dict = {}
 
     @staticmethod
-    def create(config: dict) -> IDatabase:
+    def create(config: dict) -> Type[IDatabase]:
         """
         Create a database instance based on the provided configuration.
 

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 from abc import ABC, abstractmethod
-from typing import Generic, TypeVar
+from typing import Generic, TypeVar, Type
 import sqlalchemy
 from sqlalchemy.exc import SQLAlchemyError
 from crud_repository.db.idatabase import IDatabase
@@ -33,7 +33,7 @@ class IRepository(ABC, Generic[T]):
 
 # ---------------------------------------------------------
 class Repository(IRepository[T]):
-    def __init__(self, database: IDatabase, model: type[T]):
+    def __init__(self, database: IDatabase, model: Type[T]):
         self.database = database
         self.model = model
 
