@@ -110,12 +110,9 @@ if __name__ == '__main__':
     # Create a new database instance
     db = DatabaseFactory.create(db_config)
 
-    # Create a UserRepository instance with the database instance
-    user_repo = UserRepository(db)
-
-    # OR create a generic Repository instance with the 
+    # Create a User Repository instance with the 
     # database instance and the User model
-    #user_repo = Repository(db, User)
+    user_repo = Repository(db, User)
 
     # Create a new user
     user = User(username='Candy', password='password')
