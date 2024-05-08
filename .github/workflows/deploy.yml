@@ -118,6 +118,7 @@ jobs:
           fi
 
   build:
+    needs: setup-and-test
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -153,7 +154,7 @@ jobs:
             LICENSE
 
   publish:
-    needs: setup-and-test
+    needs: build
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/release'
     # only run if job setup and test passed
