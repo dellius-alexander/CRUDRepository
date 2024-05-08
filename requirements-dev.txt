@@ -4,4 +4,4 @@ build==1.1.1
 click==8.1.7
 setuptools>=61.0
 pytest>=8.2.0
-
+twine==5.0.0

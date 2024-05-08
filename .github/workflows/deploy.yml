@@ -98,7 +98,7 @@ jobs:
       # Task for linting with black
       - name: Lint with black
         run: |
-          python -m pip install black pytest wheel setuptools build twine
+          bash deploy.sh --install-dev
           # Code formatting with black, check every python file in the crud_repository directory 
           black crud_repository
           black --check crud_repository
@@ -106,16 +106,7 @@ jobs:
       # Task for running tests
       - name: Testing with pytest
         run: |
-          python -m pip install black pytest wheel setuptools build twine
-          if [ -f requirements.txt ]; then pip install  -r requirements.txt ; fi 
-
-          # Run tests
-          if python3 -m pytest tests/ 2>&1 ; then
-              echo "Testsing completed Successfully."
-          else
-              echo "Tests failed to complete successfully."
-              exit 1
-          fi
+          bash deploy.sh --install-dev --test
 
   build:
     needs: setup-and-test
@@ -126,20 +117,13 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+          architecture: x64
 
       - name: Build package artifact
         run: |
-          python -m pip install --upgrade pip
-          python -m pip install black pytest wheel setuptools build twine
-          bash deploy.sh
-          # Build the package
-          if python3 -m build 2>&1 ; then
-              echo "Build ran Successfully."
-          else
-              echo "Build failed to complete successfully."
-              exit 1
-          fi
-          ls -l dist
+          bash deploy.sh --install-dev --build
 
       - name: Upload build artifact
         env:
@@ -174,13 +158,4 @@ jobs:
           TWINE_USERNAME: ${{ secrets.TWINE_USERNAME }}
           TWINE_PASSWORD: ${{ secrets.TWINE_PASSWORD }}
         run: |
-          python -m pip install twine
-          printf """\n
-          [pypi]
-          username = $TWINE_USERNAME
-          password = $TWINE_PASSWORD
-          """ > ~/.pypirc
-          python3 -m twine upload \
-          --config-file ~/.pypirc \
-          dist/* --verbose --skip-existing --non-interactive \
-          --disable-progress-bar &>/dev/null
+          bash deploy.sh --install-dev --publish

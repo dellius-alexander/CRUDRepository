@@ -1,67 +1,132 @@
-#!/bin/bash
+#!/usr/bin/env bash
+
+# Function to print the help message
+__print_help() {
+    cat <<<"""
+Usage: $0 [-h|--help] [-u|--update-version] [-i|--install [--dev]] [-t|--test] [-b|--build] [-p|--upload]
+
+-h, --help:         Display this help message and exit.
+-u, --update-version:  Update the package version in pyproject.toml.
+-i, --install:       Install dependencies from requirements.txt.
+--install-dev:      Install development dependencies from requirements-dev.txt.
+-t, --test:         Run tests for the current package.
+-b, --build:        Build the new package.
+-p, --upload, --publish:       Upload the project build to pypi.org.
+"""
+}
+
+# Global variable for VERSION
 VERSION=$(cat "VERSION")
-rm -rf dist/** && \
-rm -rf build/**
 
-
-__update_version() {
-# update version in pyproject.toml
-sed -E "s/version[[:space:]]*=[[:space:]]*\"[0-9]+\.[0-9]+\.[0-9]+\"/version = \"${VERSION}\"/g" pyproject.toml | tee pyproject-temp.toml
-
-# update version in pyproject.toml
-if mv pyproject-temp.toml pyproject.toml ; then
-    echo "Successfully updated version in pyproject.toml"
-    rm -rf pyproject-temp.toml
-else
-    echo "Failed to update version in pyproject.toml"
-    exit 1
-fi
-}
-
+# Updated function to handle different install options
 __install_dependencies() {
-  # install setuptools and wheel
-  if python3 -m pip install --upgrade setuptools wheel twine 2>&1 ; then
-      echo "Successfully installed setuptools and wheel"
-  else
-      echo "Failed to install setuptools and wheel"
-      exit 1
-  fi
+    if [[ $1 == "--install-dev" ]] || [[ $2 == "--install-dev" ]]; then
+        requirements_file="requirements-dev.txt"
+        echo "Installing development dependencies..."
+    else
+        requirements_file="requirements.txt"
+    fi
+    if python3 -m pip install --upgrade setuptools wheel twine 2>&1 ; then
+        echo "Successfully installed setuptools and wheel"
+    else
+        echo "Failed to install setuptools and wheel"
+        exit 1
+    fi
 
-# install requirements
-  if [ -f requirements.txt && python3 -m pip install -r requirements.txt 2>&1 ]; then
-      echo "Successfully installed requirements"
-  else
-      echo "Failed to install requirements or no requirements file found."
-      exit 1
-  fi
+    if python3 -m pip install -r "$requirements_file" 2>&1 ; then
+        echo "Successfully installed requirements"
+    else
+        echo "Failed to install requirements"
+        exit 1
+    fi
 }
 
+# Function to update the version
+__update_version() {
+    sed -E "s/version[[:space:]]*=[[:space:]]*\"[0-9]+\.[0-9]+\.[0-9]+\"/version = \"${VERSION}\"/g" pyproject.toml | tee pyproject-temp.toml
+    if mv pyproject-temp.toml pyproject.toml ; then
+        echo "Successfully updated version in pyproject.toml"
+        rm -rf pyproject-temp.toml
+    else
+        echo "Failed to update version in pyproject.toml"
+        exit 1
+    fi
+}
+
+# Function to run tests
 __run_tests() {
-  # run tests
-  if python3 -m pytest tests/ 2>&1 ; then
-      echo "Testsing completed Successfully."
-  else
-      echo "Tests failed to complete successfully."
-      exit 1
-  fi
+    if python3 -m pytest tests/ 2>&1 ; then
+        echo "Tests completed Successfully."
+    else
+        echo "Tests failed to complete successfully."
+        exit 1
+    fi
 }
 
-__build() {
-  #  build
-  if python3 -m build 2>&1 ; then
-      echo "Build and test ran Successfully."
-  else
-      echo "Build failed to complete successfully."
-      exit 1
-  fi
+# Function to build the package
+__build_package() {
+    if python3 -m build 2>&1 ; then
+        echo "Build ran Successfully."
+    else
+        echo "Build failed to complete successfully."
+        exit 1
+    fi
 }
 
-__upload() {
-  # upload to pypi
+# Function to upload the package to pypi
+__upload_package() {
+  printf """\n
+[pypi]
+username = $TWINE_USERNAME
+password = $TWINE_PASSWORD
+  """ > ~/.pypirc
   python3 -m twine upload \
-  --config-file .pypirc \
-  dist/* --verbose --skip-existing &>/dev/null
+  --verbose --skip-existing --non-interactive \
+  --config-file ~/.pypirc \
+  $(pwd)/dist/*
+  echo "Published to PyPI Successfully."
 }
-#################### MAIN ####################
-__update_version
 
+# Main function to orchestrate the execution based on command-line arguments
+main() {
+    case "$1" in
+        -h|--help)
+            __print_help
+            exit 0
+            ;;
+        -u|--update-version)
+            __update_version
+            shift
+            ;;
+        -i|--install|--install-dev)
+            __install_dependencies "$1" "$2"  # Use $2 to check for --dev option
+            shift  # Shift twice to remove -i and --dev arguments
+            [[ $# -gt 1 ]] && shift
+            ;;
+        -t|--test)
+            __run_tests
+            shift
+            ;;
+        -b|--build)
+            __build_package
+            shift
+            ;;
+        -p|--upload|--publish)
+            __upload_package
+            shift
+            ;;
+        *)
+            printf "\e[31mUnrecognized option: $1\e[0m\n"
+            __print_help
+            exit 1
+            ;;
+    esac
+    # Recursively call main with shifted arguments
+    [[ "$1" ]] && main "$@"
+}
+
+# Cleanup build and dist artifacts
+rm -rf dist/** && rm -rf build/**
+
+# Call the main function with the command-line arguments
+main "$@"
