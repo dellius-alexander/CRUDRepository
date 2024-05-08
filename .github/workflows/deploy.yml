@@ -155,7 +155,7 @@ jobs:
   publish:
     needs: build
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/release' &&  needs.setup == 'success' && test.result == 'success'
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/release' &&  needs.setup == 'success' && needs.test == 'success'
     # only run if job setup and test passed
 
     strategy:
