@@ -14,7 +14,7 @@ maintainers = [
   {name = "Dellius Alexander", email = "dalexander@hyfisolutions.com"}
 ]
 readme = {file = "PYPI.md", content-type = "text/markdown"}
-keywords = ["crud-repository", "database", "model", "abstraction"]
+keywords = ["crud-repository", "database", "model", "abstraction", "sqlalchemy"]
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Intended Audience :: Developers",
