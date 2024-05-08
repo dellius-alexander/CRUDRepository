@@ -92,7 +92,7 @@ jobs:
           docker-compose -p crudrepository up \
           --always-recreate-deps --renew-anon-volumes \
           --remove-orphans --force-recreate -d --build
-          sleep 30
+          sleep 45
           docker ps -a
 
       # Task for linting with black
