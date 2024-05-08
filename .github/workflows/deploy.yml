@@ -8,6 +8,10 @@ on:
   push:
     branches:
       - main
+      - release
+      - feature/*
+      - hotfix/*
+      - dalexander/*
   pull_request:
     branches:
       - main
@@ -35,7 +39,7 @@ jobs:
           python -m pip install black pytest wheel setuptools build twine
           if [ -f requirements.txt ]; then pip install  -r requirements.txt ; fi 
 
-  setup-docker-compose:
+  test:
     needs: setup
     runs-on: ubuntu-latest
     strategy:
@@ -127,8 +131,8 @@ jobs:
               exit 1
           fi
 
-  deploy:
-    needs: setup-docker-compose
+  build:
+    needs: test
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -162,6 +166,17 @@ jobs:
             crud_repository.egg-info
             README.md
             LICENSE
+
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' || github.event_name == 'release'
+    strategy:
+      matrix:
+        python-version: ["3.8", "3.9",  "3.10" ]
+      steps:
+      - name: Checkout
+        uses: actions/checkout@v2
 
       - name: Publish to PyPI
         env:
