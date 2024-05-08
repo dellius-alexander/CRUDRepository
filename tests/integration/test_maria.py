@@ -7,7 +7,7 @@ from sqlalchemy import create_engine, text
 from crud_repository.repo.repository import Repository
 from crud_repository.db.factory import DatabaseFactory
 from crud_repository.model.base import Base
-from tests.models import User
+from tests.models import User, Email
 from crud_repository.my_logger.logger import CustomLogger
 
 log = CustomLogger(__name__).get_logger("DEBUG")
@@ -45,6 +45,7 @@ class TestMariaDBIntegration(unittest.TestCase):
         self.db = DatabaseFactory.create(self.db_config)
         self.session = self.db.get_scoped_session()
         self.user_repo = Repository(self.db, User)
+        self.email_repo = Repository(self.db, Email)
         # Begin a transaction for each test
         self.session.begin_nested()
 

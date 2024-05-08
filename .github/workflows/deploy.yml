@@ -134,7 +134,7 @@ jobs:
           bash deploy.sh
           # Build the package
           if python3 -m build 2>&1 ; then
-              echo "Build and test ran Successfully."
+              echo "Build ran Successfully."
           else
               echo "Build failed to complete successfully."
               exit 1
@@ -158,7 +158,6 @@ jobs:
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/release'
     # only run if job setup and test passed
-
     strategy:
       matrix:
         python-version: ["3.8", "3.9",  "3.10" ]

@@ -1,14 +1,16 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-import unittest
 import os
+import unittest
+
 from sqlalchemy import create_engine, text
-from sqlalchemy.orm import Session, joinedload, subqueryload
-from crud_repository.repo.repository import Repository
+from sqlalchemy.orm import Session, subqueryload
+
 from crud_repository.db.factory import DatabaseFactory
 from crud_repository.model.base import Base
-from tests.models import User, Email
 from crud_repository.my_logger.logger import CustomLogger
+from crud_repository.repo.repository import Repository
+from tests.models import User, Email
 
 log = CustomLogger(__name__).get_logger("DEBUG")
 

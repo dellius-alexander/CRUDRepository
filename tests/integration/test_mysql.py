@@ -7,8 +7,8 @@ from sqlalchemy import create_engine, text
 from crud_repository.db.factory import DatabaseFactory
 from crud_repository.model.base import Base
 from crud_repository.my_logger.logger import CustomLogger
-from tests.repository import UserRepository
-from tests.models import User
+from crud_repository.repo.repository import Repository
+from tests.models import User, Email
 
 log = CustomLogger(__name__).get_logger("DEBUG")
 
@@ -43,7 +43,8 @@ class TestMySQLDBIntegration(unittest.TestCase):
         # Create a new database session for each test
         self.db = DatabaseFactory.create(self.db_config)
         self.session = self.db.get_scoped_session()
-        self.user_repo = UserRepository(self.db)
+        self.user_repo = Repository(self.db, User)
+        self.email_repo = Repository(self.db, Email)
         # Begin a transaction for each test
         self.session.begin_nested()
 
