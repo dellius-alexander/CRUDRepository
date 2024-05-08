@@ -3,6 +3,8 @@
 """
 This module provides classes for managing databases.
 """
+from typing import Dict
+
 from crud_repository.db.idatabase import IDatabase
 from crud_repository.db.mariadb.db import MariaDBDatabase
 from crud_repository.db.mysql.db import MySQLDatabase
@@ -17,6 +19,8 @@ class DatabaseFactory:
     """
     This class provides a factory for creating database instances.
     """
+    _instances: Dict = {}
+
     @staticmethod
     def create(config: dict) -> IDatabase:
         """
@@ -26,10 +30,14 @@ class DatabaseFactory:
         :return: (IDatabase) The created database instance.
         """
         try:
+            # Check if an instance of this type already exists
+            if config["type"] in DatabaseFactory._instances:
+                return DatabaseFactory._instances[config["type"]]
+
             # Create the appropriate database instance based on the configuration
             # (e.g., PostgreSQL, MySQL, MariaDB, etc.)
-            if config["type"] == "postgresql":
-                return PostgreSQLDatabase(
+            if config["type"].lower() == "postgresql":
+                instance = PostgreSQLDatabase(
                     **{
                         "db_name": config["db_name"],
                         "user": config["user"],
@@ -38,8 +46,8 @@ class DatabaseFactory:
                         "port": config["port"],
                     }
                 )
-            if config["type"] == "mysql":
-                return MySQLDatabase(
+            elif config["type"].lower() == "mysql":
+                instance = MySQLDatabase(
                     **{
                         "db_name": config["db_name"],
                         "user": config["user"],
@@ -48,8 +56,8 @@ class DatabaseFactory:
                         "port": config["port"],
                     }
                 )
-            if config["type"] == "mariadb":
-                return MariaDBDatabase(
+            elif config["type"].lower() == "mariadb":
+                instance = MariaDBDatabase(
                     **{
                         "db_name": config["db_name"],
                         "user": config["user"],
@@ -58,8 +66,13 @@ class DatabaseFactory:
                         "port": config["port"],
                     }
                 )
-            # ... other database types
-            raise ValueError("Invalid database type")
+            else:
+                raise ValueError("Invalid database type")
+
+            # Store the new instance in the dictionary
+            DatabaseFactory._instances[config["type"]] = instance
+
+            return instance
         except Exception as e:
             log.debug(f"Error creating database instance: {e}")
             raise e

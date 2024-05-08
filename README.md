@@ -7,38 +7,39 @@
 ---
 ## Description
 
-The CRUDRepository is a Python project designed to provide a 
-generic implementation of Create, Read, Update, and Delete (CRUD) 
-operations for various databases. It uses the Repository design pattern 
-to abstract the data access layer, allowing for easy switching between 
-different databases using the Factory pattern in which each database 
-object implements a Singleton object.  
+The CRUDRepository is a Python project designed to provide a
+generic implementation of Create, Read, Update, and Delete (CRUD)
+operations for various databases. It uses the Repository design pattern
+to abstract the data access layer, allowing for easy switching between
+different databases using the Factory pattern in which each database
+object implements a Singleton object.
 
-The project includes classes for handling different types of databases 
-such as PostgreSQL, MySQL, and MariaDB. Each of these classes implements 
-a common Interface, ensuring a consistent method of interaction 
-regardless of the underlying database.  
+The project includes classes for handling different types of databases
+such as PostgreSQL, MySQL, and MariaDB. Each of these classes implements
+a common Interface, ensuring a consistent method of interaction
+regardless of the underlying database.
 
-The CRUDRepository also includes a Repository class that provides generic 
-CRUD operations. This class can be used as a base for creating more specific 
-repositories, like the test Repository UserRepository included in the project, which is 
-designed to manage User instances.  
+The CRUDRepository also includes a Repository class that provides generic
+CRUD operations. This class can be used as a base for creating more specific
+repositories, like the test Repository UserRepository included in the project, which is
+designed to manage User instances.
 
-The project uses SQLAlchemy for ORM, providing a high-level, Pythonic 
-interface for database operations. It also includes a DatabaseFactory for 
-creating instances of the appropriate database class based on provided 
-configuration.  
+The project uses SQLAlchemy for ORM, providing a high-level, Pythonic
+interface for database operations. It also includes a DatabaseFactory for
+creating instances of the appropriate database class based on provided
+configuration. The DatabaseFactory implements the Singleton design pattern, 
+ensuring that only one instance of each database type is created.
 
-In summary, CRUDRepository is a flexible and extensible 
-foundation for Python applications that require database interactions, 
-abstracting the complexities of direct database access and providing a 
+In summary, CRUDRepository is a flexible and extensible
+foundation for Python applications that require database interactions,
+abstracting the complexities of direct database access and providing a
 clear and simple interface for performing CRUD operations.
 
 ## Class Diagram
 
 ```mermaid
 classDiagram
-    namespace Models { 
+    namespace Models {
         class Base {
         }
       class User {
@@ -47,7 +48,7 @@ classDiagram
           +password: str
       }
     }
-    namespace Databases { 
+    namespace Databases {
         class IDatabase {
             << interface >>
           +connect(): Connection
@@ -72,11 +73,12 @@ classDiagram
             +get_session(): scoped_session
         }
         class DatabaseFactory {
-            +create(config: dict): IDatabase
+            _instances: Dict$
+            +create(config: dict) : IDatabase$
         }
     }
 
-    namespace Repositories { 
+    namespace Repositories {
         class IRepository ~Base as T~ {
             << interface >>
           +create(entity: T) : T
@@ -98,12 +100,12 @@ classDiagram
     }
 
 
-    
+
     IDatabase <|-- PostgreSQLDatabase: Implements
     IDatabase <|-- MySQLDatabase: Implements
     IDatabase <|-- MariaDBDatabase: Implements
 
-    
+
     IRepository ~Base as T~ <|-- Repository : Implements
     Repository <|-- UserRepository: Implements
     PostgreSQLDatabase "1" -- "1" Repository: Uses
@@ -120,7 +122,7 @@ classDiagram
 
 * `Base` is a base class for all models, and `User` is a specific model that extends `Base`.
 * `IDatabase` is an abstract base class that defines the interface for a database. `PostgreSQLDatabase`, `MySQLDatabase`, and `MariaDBDatabase` are concrete implementations of this interface.
-* `DatabaseFactory` is a factory class that creates instances of `PostgreSQLDatabase`, `MySQLDatabase`, or `MariaDBDatabase` based on the provided configuration.
+* `DatabaseFactory` is a factory class that creates instances of `PostgreSQLDatabase`, `MySQLDatabase`, or `MariaDBDatabase` based on the provided configuration. It ensures that only one instance of each database type is created, implementing the Singleton design pattern.
 * `IRepository ~T~` is an abstract base class that defines the interface for a repository, and `Repository ~Base~` is a generic implementation of this interface that is bound to the `Base` model class.
 * `UserRepository` is a specific repository that manages `User` instances.
 * `PostgreSQLDatabase`, `MySQLDatabase`, and `MariaDBDatabase` are used by `Repository ~Base~`, and `UserRepository` manages `User` instances.
