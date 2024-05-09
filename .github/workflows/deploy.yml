@@ -131,6 +131,7 @@ jobs:
       - name: Build package artifact
         run: |
           /bin/bash deploy.sh --install-dev --build && wait $!
+          echo "Build completed Successfully."
 
       - name: Upload build artifact
         env:
