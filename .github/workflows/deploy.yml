@@ -108,7 +108,7 @@ jobs:
       # Task for running tests
       - name: Testing with pytest
         run: |
-          bash deploy.sh --test
+          bash deploy.sh --test  && wait $!
 
   build:
     needs: setup-and-test
@@ -125,7 +125,7 @@ jobs:
 
       - name: Build package artifact
         run: |
-          bash deploy.sh --install-dev --build
+          bash deploy.sh --install-dev --build && wait $!
 
       - name: Upload build artifact
         env:
@@ -160,4 +160,4 @@ jobs:
           TWINE_USERNAME: ${{ secrets.TWINE_USERNAME }}
           TWINE_PASSWORD: ${{ secrets.TWINE_PASSWORD }}
         run: |
-          bash deploy.sh --install-dev --publish
+          bash deploy.sh --install-dev --publish && wait $!
