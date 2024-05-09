@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-
+set -e
 # Function to print the help message
 __print_help() {
     cat <<<"""
@@ -102,6 +102,7 @@ main() {
             shift
             ;;
         -b|--build)
+            __update_version
             __build_package
             shift
             ;;
