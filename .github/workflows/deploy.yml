@@ -95,7 +95,7 @@ jobs:
           --remove-orphans \
           --force-recreate \
           -d --build && wait $!
-          bash deploy.sh -uv --install-dev && wait $!
+          /bin/bash deploy.sh -uv --install-dev && wait $!
           docker ps -a
 
       # Task for linting with black
@@ -108,7 +108,7 @@ jobs:
       # Task for running tests
       - name: Testing with pytest
         run: |
-          bash deploy.sh --test  && wait $!
+          /bin/bash deploy.sh --test  && wait $!
 
   build:
     needs: setup-and-test
@@ -125,7 +125,7 @@ jobs:
 
       - name: Build package artifact
         run: |
-          bash deploy.sh --install-dev --build && wait $!
+          /bin/bash deploy.sh --install-dev --build && wait $!
 
       - name: Upload build artifact
         env:
@@ -160,4 +160,4 @@ jobs:
           TWINE_USERNAME: ${{ secrets.TWINE_USERNAME }}
           TWINE_PASSWORD: ${{ secrets.TWINE_PASSWORD }}
         run: |
-          bash deploy.sh --install-dev --publish && wait $!
+          /bin/bash deploy.sh --install-dev --publish && wait $!
