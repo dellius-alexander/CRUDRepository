@@ -94,8 +94,8 @@ jobs:
           --renew-anon-volumes \
           --remove-orphans \
           --force-recreate \
-          -d --build &&
-          bash deploy.sh -uv --install-dev &&
+          -d --build && wait $!
+          bash deploy.sh -uv --install-dev && wait $!
           docker ps -a
 
       # Task for linting with black
