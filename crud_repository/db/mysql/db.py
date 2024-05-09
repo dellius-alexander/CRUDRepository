@@ -43,7 +43,8 @@ class MySQLDatabase(IDatabase):
             # Create the engine and session
             self.engine = create_engine(url)
             self.session = scoped_session(sessionmaker(bind=self.engine))
-            # Add this line to create all tables based on Base class
+            # Create all tables for the specific database type
+            self.engine.echo = True
             Base.metadata.create_all(self.engine)
         except OperationalError as e:
             log.debug(f"Error connecting to MySQL database: {e}")

@@ -3,12 +3,12 @@
 """
 This module provides classes for managing databases.
 """
-from typing import Dict, Type
-
+from typing import Dict
 from crud_repository.db.idatabase import IDatabase
 from crud_repository.db.mariadb.db import MariaDBDatabase
 from crud_repository.db.mysql.db import MySQLDatabase
 from crud_repository.db.postgres.db import PostgreSQLDatabase
+from crud_repository.model.base import Base
 from crud_repository.my_logger.logger import CustomLogger
 
 log = CustomLogger(__name__).get_logger("DEBUG")
@@ -17,62 +17,41 @@ log = CustomLogger(__name__).get_logger("DEBUG")
 # ---------------------------------------------------------
 class DatabaseFactory:
     """
-    This class provides a factory for creating database instances.
+    This class provides a factory for creating database instances and ensuring tables are created.
     """
-    _instances: Dict = {}
+    _instances: Dict[str, IDatabase] = {}
 
     @staticmethod
-    def create(config: dict) -> Type[IDatabase]:
+    def create(config: dict) -> IDatabase:
         """
-        Create a database instance based on the provided configuration.
+        Create a database instance based on the provided configuration and create/update all tables.
 
         :param config: The configuration for the database.
-        :return: (IDatabase) The created database instance.
+        :return: The created database instance.
         """
         try:
-            # Check if an instance of this type already exists
-            if config["type"] in DatabaseFactory._instances:
-                return DatabaseFactory._instances[config["type"]]
+            db_type = config["type"].lower()
 
-            # Create the appropriate database instance based on the configuration
-            # (e.g., PostgreSQL, MySQL, MariaDB, etc.)
-            if config["type"].lower() == "postgresql":
-                instance = PostgreSQLDatabase(
-                    **{
-                        "db_name": config["db_name"],
-                        "user": config["user"],
-                        "password": config["password"],
-                        "host": config["host"],
-                        "port": config["port"],
-                    }
-                )
-            elif config["type"].lower() == "mysql":
-                instance = MySQLDatabase(
-                    **{
-                        "db_name": config["db_name"],
-                        "user": config["user"],
-                        "password": config["password"],
-                        "host": config["host"],
-                        "port": config["port"],
-                    }
-                )
-            elif config["type"].lower() == "mariadb":
-                instance = MariaDBDatabase(
-                    **{
-                        "db_name": config["db_name"],
-                        "user": config["user"],
-                        "password": config["password"],
-                        "host": config["host"],
-                        "port": config["port"],
-                    }
-                )
+            # Check if an instance of this type already exists
+            if db_type in DatabaseFactory._instances:
+                return DatabaseFactory._instances[db_type]
+
+            # Create the database instance
+            instance: IDatabase
+            if db_type == "postgresql":
+                instance = PostgreSQLDatabase(**config)
+            elif db_type == "mysql":
+                instance = MySQLDatabase(**config)
+            elif db_type == "mariadb":
+                instance = MariaDBDatabase(**config)
             else:
-                raise ValueError("Invalid database type")
+                log.debug(f"Invalid database type: {db_type}")
+                raise ValueError("Invalid database type: %s" % db_type)
 
             # Store the new instance in the dictionary
-            DatabaseFactory._instances[config["type"]] = instance
-
+            DatabaseFactory._instances[db_type] = instance
             return instance
         except Exception as e:
             log.debug(f"Error creating database instance: {e}")
             raise e
+

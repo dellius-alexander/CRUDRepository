@@ -415,3 +415,8 @@ if __name__ == '__main__':
     user_repo.create(user)
 ```
 ---
+Models:
+  * User: Represents a user entity with attributes id, username, password, email (email.id), address (address.id), role (role.id) last_updated
+  * Address: Represents an address entity with attributes id, street, city, state, zipcode, last_updated
+  * Role: Represents a role entity with attributes id, name, last_updated
+  * Email: Represents an email entity with attributes id, email, last_updated

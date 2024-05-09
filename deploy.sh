@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-set -e
 # Function to print the help message
 __print_help() {
     cat <<<"""
