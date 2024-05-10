@@ -145,24 +145,15 @@ jobs:
             README.md
             LICENSE
 
-  publish:
-    needs: build
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/release'
-    strategy:
-      matrix:
-        python-version: ["3.8", "3.9",  "3.10" ]
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
       - name: Download build artifact
+        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/release'
         uses: actions/download-artifact@v2
         with:
           name: Build-Results
-          path: /home/runner/work/CRUDRepository/CRUDRepository/dist
+          path: dist
 
       - name: Publish to PyPI
+        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/release'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TWINE_USERNAME: ${{ secrets.TWINE_USERNAME }}
