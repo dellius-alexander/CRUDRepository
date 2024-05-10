@@ -79,6 +79,7 @@ password = $TWINE_PASSWORD
   --config-file ~/.pypirc \
   dist/*
   echo "Published to PyPI Successfully."
+  return 0
 }
 
 # Main function to orchestrate the execution based on command-line arguments
@@ -93,8 +94,8 @@ main() {
             shift
             ;;
         -i|--install|--install-dev)
-            __install_dependencies "$1" "$2"  # Use $2 to check for --dev option
-            shift  # Shift twice to remove -i and --dev arguments
+            __install_dependencies "$1" "$2"  # Use $2 to check for --install-dev option
+            shift  # Shift twice to remove -i and --install-dev arguments, but once if only -i or --install-dev is provided
             [[ $# -gt 1 ]] && shift
             ;;
         -t|--test)
