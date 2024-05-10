@@ -3,6 +3,7 @@
 import unittest
 import os
 from sqlalchemy import create_engine, text
+from sqlalchemy.orm import Session, subqueryload
 
 from crud_repository.db.factory import DatabaseFactory
 from crud_repository.model.base import Base
@@ -16,12 +17,12 @@ log = CustomLogger(__name__).get_logger("DEBUG")
 class TestMySQLDBIntegration(unittest.TestCase):
     db_url = (f'mysql+pymysql://'
               f'{os.getenv("MYSQL_USER")}:{os.getenv("MYSQL_PASSWORD")}@'
-              f'{os.getenv("MYSQL_HOST")}:{os.getenv("MYSQL_PORT")}/{os.getenv("MYSQL_DATABASE")}')
+              f'{os.getenv("MYSQL_HOST")}:{os.getenv("MYSQL_PORT")}/testdb')
     # Create a new database session for each test
     db_config = {
         "type": "mysql",
         "db_name": "testdb",
-        "user": "root",
+        "user": os.getenv("MYSQL_USER"),
         "password": os.getenv("MYSQL_PASSWORD"),
         "host": os.getenv("MYSQL_HOST"),
         "port": os.getenv("MYSQL_PORT")
@@ -33,7 +34,7 @@ class TestMySQLDBIntegration(unittest.TestCase):
             engine = create_engine(cls.db_url)
             # Create the database and the table
             with engine.connect() as conn:
-                conn.execute(text("CREATE DATABASE IF NOT EXISTS test_db"))
+                conn.execute(text("CREATE DATABASE IF NOT EXISTS testdb"))
             Base.metadata.create_all(engine)
         except Exception as e:
             log.error(f"Error creating database: {e}")
@@ -54,7 +55,7 @@ class TestMySQLDBIntegration(unittest.TestCase):
         try:
             engine = create_engine(cls.db_url)
             with engine.connect() as conn:
-                conn.execute(text("DROP DATABASE IF EXISTS test_db"))
+                conn.execute(text("DROP DATABASE IF EXISTS testdb"))
         except Exception as e:
             log.error(f"Error dropping database: {e}")
 
@@ -69,13 +70,53 @@ class TestMySQLDBIntegration(unittest.TestCase):
     def test_database_session(self):
         self.assertIsNotNone(self.db.get_scoped_session())
 
+    def test_create_user_with_emails(self):
+        with Session(self.db.engine) as session:
+            email1 = Email(email="test1@example.com")
+            email2 = Email(email="test2@example.com")
+            new_user = User(
+                username="test_user", password="test_password",
+                emails=[email1, email2],
+                name="Test User"
+
+            )
+            session.add_all([email1, email2, new_user])
+            log.debug(f"New User: {new_user.__dict__}")
+            session.commit()
+
+            # Eager Loading Options:
+            # created_user = session.query(User) \
+            #     .options(joinedload(User.emails)) \
+            #     .filter(User.id == new_user.id) \
+            #     .one()
+            # log.debug(f"Joined Query New User: {new_user.__dict__}")
+
+            # OR (in some cases subqueryload might be better)
+            created_user = session.query(User)\
+                .options(subqueryload(User.emails))\
+                .filter(User.id == new_user.id)\
+                .one()
+            log.debug(f"SubQuery New User: {created_user.__dict__}")
+
+            # Assert the user and associated emails were created
+            self.assertIsNotNone(created_user)
+            self.assertEqual(created_user.username, "test_user")
+            self.assertEqual(len(created_user.emails), 2)  # Check 2 emails
+            self.assertEqual(created_user.emails[0].email, "test1@example.com")
+            self.assertEqual(created_user.emails[1].email, "test2@example.com")
+
     def test_create_user(self):
         new_user = User(username="test_user", password="test_password")
         self.user_repo.create(new_user)
+        log.debug(f"New User: {new_user.__dict__}")
+        # Assert that the user was created successfully
         created_user = self.user_repo.read(new_user.id)
         self.assertIsNotNone(created_user)
         self.assertEqual(created_user.username, "test_user")
         self.assertEqual(created_user.password, "test_password")
+        log.debug(f"""
+        Created User: {created_user.__dict__}
+        """)
 
     def test_read_user(self):
         new_user = User(username="test_user", password="test_password")

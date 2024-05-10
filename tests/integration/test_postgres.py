@@ -17,7 +17,7 @@ log = CustomLogger(__name__).get_logger("DEBUG")
 
 class TestPostgresDBIntegration(unittest.TestCase):
     db_url = (f'postgresql+psycopg2://{os.getenv("POSTGRES_USER")}:{os.getenv("POSTGRES_PASSWORD")}'
-              f'@{os.getenv("POSTGRES_HOST")}:{os.getenv("POSTGRES_HOST")}/{os.getenv("POSTGRES_DB")}')
+              f'@{os.getenv("POSTGRES_HOST")}:{os.getenv("POSTGRES_PORT")}/{os.getenv("POSTGRES_DB")}')
     db_config = {
         "type": "postgresql",
         "db_name": os.getenv("POSTGRES_DB"),
@@ -83,10 +83,11 @@ class TestPostgresDBIntegration(unittest.TestCase):
             email2 = Email(email="test2@example.com")
             new_user = User(
                 username="test_user", password="test_password",
-                name="Test Name", fullname="Test User Full",
-                emails=[email1, email2]
+                emails=[email1, email2],
+                name="Test User"
+
             )
-            session.add_all([new_user, email1, email2])
+            session.add_all([email1, email2, new_user])
             log.debug(f"New User: {new_user.__dict__}")
             session.commit()
 
@@ -106,9 +107,7 @@ class TestPostgresDBIntegration(unittest.TestCase):
 
             # Assert the user and associated emails were created
             self.assertIsNotNone(created_user)
-            log.debug(f"New User Emails: {created_user.emails}")
             self.assertEqual(created_user.username, "test_user")
-            # ... (assert other user attributes)
             self.assertEqual(len(created_user.emails), 2)  # Check 2 emails
             self.assertEqual(created_user.emails[0].email, "test1@example.com")
             self.assertEqual(created_user.emails[1].email, "test2@example.com")

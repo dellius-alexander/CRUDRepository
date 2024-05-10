@@ -50,5 +50,5 @@ class PostgreSQLDatabase(IDatabase):
         except Exception as e:
             log.debug(f"Error initializing MySQL database: {e}")
             traceback.print_exc()
-            sys.exit(1)
+            raise e
 
