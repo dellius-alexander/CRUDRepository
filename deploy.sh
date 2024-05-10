@@ -70,13 +70,14 @@ __build_package() {
 __upload_package() {
   printf """\n
 [pypi]
+repository: https://upload.pypi.org/legacy/
 username = $TWINE_USERNAME
 password = $TWINE_PASSWORD
   """ > ~/.pypirc
   python3 -m twine upload \
   --verbose --skip-existing --non-interactive \
   --config-file ~/.pypirc \
-  $(pwd)/dist/*
+  dist/*
   echo "Published to PyPI Successfully."
 }
 
