@@ -9,11 +9,7 @@ env:
 on:
   push:
     branches:
-      - main
-      - release
-      - feature/*
-      - hotfix/*
-      - dalexander/*
+      - *
   pull_request:
     branches:
       - main
@@ -161,5 +157,5 @@ jobs:
               python3 -m twine upload \
               --verbose --skip-existing --non-interactive \
               --config-file ~/.pypirc \
-              dist/*
+              dist/* &> /dev/null
               echo "Published to PyPI Successfully."
