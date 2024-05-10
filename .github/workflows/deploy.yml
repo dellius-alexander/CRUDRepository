@@ -118,7 +118,7 @@ jobs:
               exit 1
           fi
 
-  build:
+  build-and-publish:
     needs: setup-and-test
     runs-on: ubuntu-latest
     strategy:
@@ -145,13 +145,6 @@ jobs:
             README.md
             LICENSE
 
-      - name: Download build artifact
-        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/release'
-        uses: actions/download-artifact@v2
-        with:
-          name: Build-Results
-          path: dist
-
       - name: Publish to PyPI
         if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/release'
         env:
@@ -159,4 +152,14 @@ jobs:
           TWINE_USERNAME: ${{ secrets.TWINE_USERNAME }}
           TWINE_PASSWORD: ${{ secrets.TWINE_PASSWORD }}
         run: |
-          /bin/bash deploy.sh --install-dev --publish && wait $!
+            printf """\n
+            [pypi]
+            repository: https://upload.pypi.org/legacy/
+            username = $TWINE_USERNAME
+            password = $TWINE_PASSWORD
+              """ > ~/.pypirc
+              python3 -m twine upload \
+              --verbose --skip-existing --non-interactive \
+              --config-file ~/.pypirc \
+              dist/*
+              echo "Published to PyPI Successfully."
