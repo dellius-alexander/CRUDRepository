@@ -99,12 +99,12 @@ jobs:
           --remove-orphans \
           --force-recreate \
           -d --build && wait $!
-          /bin/bash deploy.sh -uv --install-dev && wait $!
           docker ps -a
 
       # Task for linting with black
       - name: Lint with black
         run: |
+          /bin/bash deploy.sh -uv --install-dev && wait $!
           # Code formatting with black, check every python file in the crud_repository directory 
           black crud_repository
           black --check crud_repository

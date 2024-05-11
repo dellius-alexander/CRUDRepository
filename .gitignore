@@ -27,7 +27,7 @@
 /poetry.lock
 /poetry.toml
 /.devcontainer/nginx-proxy/
-
+/**/.DS_Store
 /AI-RESPONSE.md
 /tests/test_model_a.py
 /tests/test_model_b.py
