@@ -3,7 +3,6 @@
 """
 This module provides classes for managing databases.
 """
-import sys
 import traceback
 from sqlalchemy import create_engine, Connection, text
 from sqlalchemy.exc import OperationalError
