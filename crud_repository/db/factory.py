@@ -4,7 +4,7 @@
 This module provides classes for managing databases.
 """
 import traceback
-from typing import Dict, Annotated
+from typing_extensions import Dict, Annotated
 from crud_repository.db.idatabase import IDatabase
 from crud_repository.db.mariadb.db import MariaDBDatabase
 from crud_repository.db.mysql.db import MySQLDatabase
