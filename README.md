@@ -39,6 +39,36 @@ clear and simple interface for performing CRUD operations.
 
 ```mermaid
 classDiagram
+    direction BT
+    namespace Repositories {
+        class IRepository ~Base as T~ {
+            << interface >>
+          +create(entity: T) : T
+          +read(id) : T
+          +update(entity: T): T
+          +delete(entity: T): None
+      }
+        class Repository ~Base as T~ {
+          #database: IDatabase
+          #model: T
+          +__init__(database: IDatabase, model: T)
+          +create(entity: T) : T
+          +read(id) : T
+          +update(entity: T): T
+          +delete(entity: T): None
+      }
+        class UserRepository {
+          #database: IDatabase
+          #model: User
+          +__init__(database: IDatabase, model: User)
+          +create(user: User) : User
+          +read(id) : User
+          +update(user: User): User
+          +delete(user: User): None 
+      }
+    }
+    
+    direction BT
     namespace Models {
         class Base {
         }
@@ -48,11 +78,17 @@ classDiagram
           +password: str
       }
     }
+    
+    direction TB
     namespace Databases {
         class IDatabase {
             << interface >>
           +connect(): Connection
           +get_session(): scoped_session
+        }
+        class DatabaseFactory {
+            _instances: Dict$
+            +create(config: dict) : IDatabase$
         }
         class PostgreSQLDatabase {
             +session: scoped_session
@@ -72,50 +108,33 @@ classDiagram
             +connect(): Connection
             +get_session(): scoped_session
         }
-        class DatabaseFactory {
-            _instances: Dict$
-            +create(config: dict) : IDatabase$
-        }
+        
     }
-
-    namespace Repositories {
-        class IRepository ~Base as T~ {
-            << interface >>
-          +create(entity: T) : T
-          +read(id) : T
-          +update(entity: T): T
-          +delete(entity: T): None
-      }
-        class Repository {
-          #database: IDatabase
-          #model: T
-          +create(entity: T) : T
-          +read(id) : T
-          +update(entity: T): T
-          +delete(entity: T): None
-      }
-        class UserRepository {
-            +__init__(database: IDatabase)
-        }
-    }
+    
 
 
 
     IDatabase <|-- PostgreSQLDatabase: Implements
     IDatabase <|-- MySQLDatabase: Implements
     IDatabase <|-- MariaDBDatabase: Implements
-
-
-    IRepository ~Base as T~ <|-- Repository : Implements
-    Repository <|-- UserRepository: Implements
+    
     PostgreSQLDatabase "1" -- "1" Repository: Uses
     MySQLDatabase "1" -- "1" Repository: Uses
     MariaDBDatabase "1" -- "1" Repository: Uses
-    UserRepository "1" -- "1" User: Manages
-    Base <|-- User: Implements
+        
     DatabaseFactory --> PostgreSQLDatabase: << create >>
     DatabaseFactory --> MySQLDatabase: << create >>
     DatabaseFactory --> MariaDBDatabase: << create >>
+    
+    IRepository ~Base as T~ "1" o-- "1" Base: Uses
+    IRepository ~Base as T~ <|-- Repository : Implements
+    Repository ~Base as T~ "1" o-- "1" Base: Uses
+    Repository <|-- UserRepository: Implements
+    UserRepository "1" -- "1" IDatabase: Uses
+    UserRepository "1" *-- "1" User: Manages
+    
+    Base <|-- User: Implements
+
 ```
 
 ### In this diagram (Class Diagram):
