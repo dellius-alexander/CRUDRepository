@@ -3,12 +3,12 @@
 """
 This module provides classes for managing databases.
 """
-from typing import Dict
+import traceback
+from typing import Dict, Annotated
 from crud_repository.db.idatabase import IDatabase
 from crud_repository.db.mariadb.db import MariaDBDatabase
 from crud_repository.db.mysql.db import MySQLDatabase
 from crud_repository.db.postgres.db import PostgreSQLDatabase
-from crud_repository.model.base import Base
 from crud_repository.my_logger.logger import CustomLogger
 
 log = CustomLogger(__name__).get_logger("DEBUG")
@@ -17,9 +17,33 @@ log = CustomLogger(__name__).get_logger("DEBUG")
 # ---------------------------------------------------------
 class DatabaseFactory:
     """
-    This class provides a factory for creating database instances and ensuring tables are created.
+    The factory is a singleton that stores instances of the database types.
+
+    The factory creates a database instance based on the provided configuration and creates or updates all tables.
+
+    Attributes:
+        _instances (:dict[`str`, `IDatabase`]): A dictionary of database instances.
+
+    Methods:
+        create(config: dict) -> IDatabase: Create a database instance based on the provided configuration and create/update all tables.
+
+    Example:
+        >>> db_config = {
+            "type": "postgresql",
+            "db_name": "mydb",
+            "user": "myuser",
+            "password": "mypassword",
+            "host": "hostname/ip address",
+            "port": "5432"
+        }
+        >>> db = DatabaseFactory.create(db_config)
+
+    Exception:
+        ValueError: If the database type is invalid.
+        Exception: If an error occurs while creating the database instance.
     """
-    _instances: Dict[str, IDatabase] = {}
+
+    _instances: Annotated[Dict[str, IDatabase], "A dictionary of database instances."] = {}
 
     @staticmethod
     def create(config: dict) -> IDatabase:
@@ -28,15 +52,19 @@ class DatabaseFactory:
 
         :param config: The configuration for the database.
         :return: The created database instance.
+        :exception ValueError: If the database type is invalid.
+        :exception Exception: If an error occurs while creating the database instance.
         """
         try:
+            # Get the database type from the configuration
             db_type = config["type"].lower()
 
             # Check if an instance of this type already exists
             if db_type in DatabaseFactory._instances:
+                # Return the existing instance
                 return DatabaseFactory._instances[db_type]
 
-            # Create the database instance
+            # Create the database instance based on the type
             instance: IDatabase
             if db_type == "postgresql":
                 instance = PostgreSQLDatabase(**config)
@@ -53,5 +81,6 @@ class DatabaseFactory:
             return instance
         except Exception as e:
             log.debug(f"Error creating database instance: {e}")
+            traceback.print_exc()
             raise e
 
