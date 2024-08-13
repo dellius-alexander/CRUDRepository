@@ -85,21 +85,24 @@ jobs:
           POSTGRES_DB=$POSTGRES_DB
           POSTGRES_USER=$POSTGRES_USER
           POSTGRES_PASSWORD=$POSTGRES_PASSWORD
-          POSTGRES_INITDB_ARGS=
-          POSTGRES_INITDB_WALDIR=
+          POSTGRES_INITDB_ARGS=""
+          POSTGRES_INITDB_WALDIR=""
           POSTGRES_HOST_AUTH_METHOD=scram-sha-256
           PGDATA=/var/lib/postgresql/data
           POSTGRES_PORT=$POSTGRES_PORT
           POSTGRES_VERSION=$POSTGRES_VERSION
           POSTGRES_HOST=$POSTGRES_HOST
-          # ##########################################################
           """ > .env
+        
+          # Start the services
           docker compose -p crudrepository up \
           --always-recreate-deps \
           --renew-anon-volumes \
           --remove-orphans \
           --force-recreate \
           -d --build && wait $!
+          
+          # List the services
           docker ps -a
 
       # Task for linting with black
