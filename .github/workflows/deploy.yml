@@ -105,7 +105,20 @@ jobs:
           
           # List the services
           docker ps -a
-          sleep 30
+          # WE HAVE TO WAIT FOR THE SERVICES TO START
+          while ! docker exec crudrepository-mysql-1 mysqladmin ping -h localhost --silent; do
+            echo "Waiting for MySQL to start..."
+            sleep 30
+          done
+          while ! docker exec crudrepository-postgres-1 pg_isready -h localhost -U alpha -d demo_db; do
+              echo "Waiting for Postgres to start..."
+              sleep 30
+          done
+          while ! docker exec crudrepository-maria-1 mysqladmin ping -h localhost --silent; do
+              echo "Waiting for MariaDB to start..."
+              sleep 30
+          done
+          echo "All services are up and running."
 
       # Task for linting with black
       - name: Lint with black
