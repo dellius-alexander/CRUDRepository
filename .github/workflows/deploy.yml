@@ -59,8 +59,7 @@ jobs:
           MARIADB_ROOT_PASSWORD: developer
           MARIADB_HOST: 127.0.0.1
           MARIADB_PORT: 3307
-        run: |
-          
+        run: |          
           printf """
           LOG_LEVEL="DEBUG"
           MARIADB_DATABASE=$MARIADB_DATABASE
@@ -116,6 +115,7 @@ jobs:
       # Task for running tests
       - name: Testing with pytest
         run: |
+          docker ps -a
           if python3 -m pytest tests/ 2>&1 ; then
               echo "Tests completed Successfully."
           else
