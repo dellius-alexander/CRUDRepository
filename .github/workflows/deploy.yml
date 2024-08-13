@@ -118,16 +118,16 @@ jobs:
       - name: Testing with pytest
         run: |
           # List the services
-          docker ps -a
+          docker ps -a && wait $!
           # Inspect the services
-          docker inspect crudrepository-mysql-1
-          docker inspect crudrepository-postgres-1
-          docker inspect crudrepository-maria-1
+          docker inspect crudrepository-mysql-1 && wait $!
+          docker inspect crudrepository-postgres-1 && wait $!
+          docker inspect crudrepository-maria-1 && wait $!
           
           # curl each service to ensure they are running
-          curl -s -o /dev/null -w "%{http_code}" http://localhost:3306
-          curl -s -o /dev/null -w "%{http_code}" http://localhost:3307
-          curl -s -o /dev/null -w "%{http_code}" http://localhost:5432
+          curl -s -o /dev/null http://localhost:3306
+          curl -s -o /dev/null http://localhost:3307
+          curl -s -o /dev/null http://localhost:5432
           
           if python3 -m pytest tests/ 2>&1 ; then
               echo "Tests completed Successfully."
