@@ -45,23 +45,25 @@ jobs:
           POSTGRES_USER: alpha
           POSTGRES_PASSWORD: developer
           POSTGRES_VERSION: 13
-          POSTGRES_HOST: 127.0.0.1
+          POSTGRES_HOST: localhost
           POSTGRES_PORT: 5432
           MYSQL_DATABASE: demo_db
           MYSQL_USER: alpha
           MYSQL_PASSWORD: developer
           MYSQL_ROOT_PASSWORD: developer
-          MYSQL_HOST: 127.0.0.1
+          MYSQL_HOST: localhost
           MYSQL_PORT: 3306
           MARIADB_DATABASE: demo_db
           MARIADB_USER: alpha
           MARIADB_PASSWORD: developer
           MARIADB_ROOT_PASSWORD: developer
-          MARIADB_HOST: 127.0.0.1
+          MARIADB_HOST: localhost
           MARIADB_PORT: 3307
         run: |          
           printf """
+          # ##########################################################
           LOG_LEVEL="DEBUG"
+          # ##########################################################
           MARIADB_DATABASE=$MARIADB_DATABASE
           MARIADB_USER=$MARIADB_USER
           MARIADB_PASSWORD=$MARIADB_PASSWORD

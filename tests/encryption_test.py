@@ -1,11 +1,15 @@
 """
 Generate a key and IV
+
 >>> openssl enc -aes-256-cbc -k secret -P -md sha1
 
+
 Encrypt the password
+
 >>> echo -n "yourpassword" | openssl enc -aes-256-cbc -base64 -K <key> -iv <iv>
 
-# Decrypt the password
+Decrypt the password
+
 >>> echo -n "<encrypted_password>" | openssl enc -aes-256-cbc -d -base64 -K <key> -iv <iv>
 """
 
@@ -45,5 +49,5 @@ decrypted_password = result.stdout
 print(f"Decrypted Password: {decrypted_password}")
 
 
-if __name__ == "__main__":
-    pass
+# if __name__ == "__main__":
+#     pass
