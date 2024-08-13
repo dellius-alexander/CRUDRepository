@@ -123,12 +123,7 @@ jobs:
           docker inspect crudrepository-mysql-1 && wait $!
           docker inspect crudrepository-postgres-1 && wait $!
           docker inspect crudrepository-maria-1 && wait $!
-          
-          # curl each service to ensure they are running
-          curl -s -o /dev/null http://localhost:3306
-          curl -s -o /dev/null http://localhost:3307
-          curl -s -o /dev/null http://localhost:5432
-          
+          # Run the tests          
           if python3 -m pytest tests/ 2>&1 ; then
               echo "Tests completed Successfully."
           else
