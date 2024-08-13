@@ -17,11 +17,11 @@ log = CustomLogger(__name__).get_logger("DEBUG")
 class TestMySQLDBIntegration(unittest.TestCase):
     db_url = (f'mysql+pymysql://'
               f'{os.getenv("MYSQL_USER")}:{os.getenv("MYSQL_PASSWORD")}@'
-              f'{os.getenv("MYSQL_HOST")}:{os.getenv("MYSQL_PORT")}/testdb')
+              f'{os.getenv("MYSQL_HOST")}:{os.getenv("MYSQL_PORT")}/{os.getenv("MYSQL_DATABASE")}')
     # Create a new database session for each test
     db_config = {
         "type": "mysql",
-        "db_name": "testdb",
+        "db_name": os.getenv("MYSQL_DATABASE"),
         "user": os.getenv("MYSQL_USER"),
         "password": os.getenv("MYSQL_PASSWORD"),
         "host": os.getenv("MYSQL_HOST"),
@@ -34,7 +34,7 @@ class TestMySQLDBIntegration(unittest.TestCase):
             engine = create_engine(cls.db_url)
             # Create the database and the table
             with engine.connect() as conn:
-                conn.execute(text("CREATE DATABASE IF NOT EXISTS testdb"))
+                conn.execute(text(F"CREATE DATABASE IF NOT EXISTS {cls.db_config['db_name']}"))
             Base.metadata.create_all(engine)
         except Exception as e:
             log.error(f"Error creating database: {e}")

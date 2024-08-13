@@ -33,3 +33,4 @@
 /tests/test_model_b.py
 /tests/logs/*.log
 /.github/workflows/.deploy.yml
+/**/*.log

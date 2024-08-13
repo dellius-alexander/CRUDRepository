@@ -33,9 +33,11 @@ class PostgreSQLDatabase(IDatabase):
             host = kwargs.get("host", None)
             port = kwargs.get("port", None)
             url = kwargs.get("url", f"postgresql+psycopg2://{user}:{password}@{host}:{port}/{db_name}")
+
             # Create the database if it doesn't exist
             if not database_exists(url):
                 create_database(url)
+
             # Create the engine and session
             self.engine = create_engine(url)
             self.session = scoped_session(sessionmaker(bind=self.engine))

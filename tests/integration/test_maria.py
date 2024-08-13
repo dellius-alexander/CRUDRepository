@@ -30,10 +30,11 @@ class TestMariaDBIntegration(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         try:
+            log.debug(f"db_url: {cls.db_url}")
             engine = create_engine(cls.db_url)
             # Create the database
             with engine.connect() as conn:
-                conn.execute(text("CREATE DATABASE test_db"))
+                conn.execute(text(f"CREATE DATABASE {cls.db_config['db_name']}"))
             # Create the tables
             Base.metadata.create_all(engine)
         except Exception as e:
