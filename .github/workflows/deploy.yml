@@ -105,6 +105,7 @@ jobs:
           
           # List the services
           docker ps -a
+          sleep 30
 
       # Task for linting with black
       - name: Lint with black
